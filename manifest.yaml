@@ -372,21 +372,21 @@ dublin_core:
     translation decisions.
   format: text/tsv
   identifier: tn
-  issued: '2023-02-11'
+  issued: '2022-12-21'
   language:
     direction: ltr
     identifier: en
     title: English
-  modified: '2023-02-11'
+  modified: '2022-12-21'
   publisher: unfoldingWord
   relation:
-    - en/ult?v=41
-    - en/ust?v=40
+    - en/ult?v=45
+    - en/ust?v=44
     - hbo/uhb?v=2.1.30
     - el-x-koine/ugnt?v=0.30
-    - en/ta?v=33
-    - en/tq?v=38
-    - en/tw?v=36
+    - en/ta?v=36
+    - en/tq?v=42
+    - en/tw?v=40
   rights: CC BY-SA 4.0
   source:
     - identifier: tn
