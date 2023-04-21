@@ -372,12 +372,12 @@ dublin_core:
     translation decisions.
   format: text/tsv
   identifier: tn
-  issued: '2022-12-21'
+  issued: '2023-02-11'
   language:
     direction: ltr
     identifier: en
     title: English
-  modified: '2022-12-21'
+  modified: '2023-02-11'
   publisher: unfoldingWord
   relation:
     - en/ult?v=45
