@@ -380,13 +380,13 @@ dublin_core:
   modified: '2023-07-25'
   publisher: unfoldingWord
   relation:
-    - en/ult?v=45
-    - en/ust?v=44
+    - en/ult
+    - en/ust
+    - en/ta
+    - en/tq
+    - en/tw
     - hbo/uhb?v=2.1.30
     - el-x-koine/ugnt?v=0.30
-    - en/ta?v=36
-    - en/tq?v=42
-    - en/tw?v=40
   rights: CC BY-SA 4.0
   source:
     - identifier: tn
