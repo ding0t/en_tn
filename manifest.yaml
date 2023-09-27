@@ -386,7 +386,7 @@ dublin_core:
     - en/tq
     - en/tw
     - hbo/uhb?v=2.1.30
-    - el-x-koine/ugnt?v=0.30
+    - el-x-koine/ugnt?v=0.34
   rights: CC BY-SA 4.0
   source:
     - identifier: tn
