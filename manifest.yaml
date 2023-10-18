@@ -372,12 +372,12 @@ dublin_core:
     translation decisions.
   format: text/tsv
   identifier: tn
-  issued: '2023-09-25'
+  issued: '2023-10-18'
   language:
     direction: ltr
     identifier: en
     title: English
-  modified: '2023-09-25'
+  modified: '2023-10-18'
   publisher: unfoldingWord
   relation:
     - en/ult
@@ -391,11 +391,11 @@ dublin_core:
   source:
     - identifier: tn
       language: en
-      version: '74'
+      version: '75'
   subject: TSV Translation Notes
   title: unfoldingWord® Translation Notes
   type: help
-  version: '75'
+  version: '76'
 checking:
   checking_entity:
     - unfoldingWord
