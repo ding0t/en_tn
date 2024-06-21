@@ -366,10 +366,7 @@ dublin_core:
     - Yvonne Tallent
   creator: Door43 World Missions Community
   description: >-
-    Open-licensed exegetical notes that provide historical, cultural, and
-    linguistic information for translators. It provides translators and checkers
-    with pertinent, just-in-time information to help them make the best possible
-    translation decisions.
+    Open-licensed exegetical notes that provide historical, cultural, and linguistic information for translators. It provides translators and checkers with pertinent, just-in-time information to help them make the best possible translation decisions.
   format: text/tsv
   identifier: tn
   issued: '2024-06-21'
@@ -658,13 +655,6 @@ projects:
     identifier: hag
     sort: 37
     path: tn_HAG.tsv
-    categories:
-      - bible-ot
-  - title: Zechariah
-    versification: ufw
-    identifier: zec
-    sort: 38
-    path: tn_ZEC.tsv
     categories:
       - bible-ot
   - title: Malachi
