@@ -372,12 +372,12 @@ dublin_core:
     translation decisions.
   format: text/tsv
   identifier: tn
-  issued: '2024-06-21'
+  issued: '2024-08-14'
   language:
     direction: ltr
     identifier: en
     title: English
-  modified: '2024-06-21'
+  modified: '2024-08-14'
   publisher: unfoldingWord
   relation:
     - en/ult
@@ -391,11 +391,11 @@ dublin_core:
   source:
     - identifier: tn
       language: en
-      version: '82'
+      version: '83.1'
   subject: TSV Translation Notes
   title: unfoldingWord® Translation Notes
   type: help
-  version: '83'
+  version: '84'
 checking:
   checking_entity:
     - unfoldingWord
@@ -415,88 +415,11 @@ projects:
     path: ./tn_EXO.tsv
     categories:
       - bible-ot
-  - title: Leviticus
-    versification: ufw
-    identifier: lev
-    sort: 3
-    path: ./tn_LEV.tsv
-    categories:
-      - bible-ot
-  - title: Numbers
-    versification: ufw
-    identifier: num
-    sort: 4
-    path: ./tn_NUM.tsv
-    categories:
-      - bible-ot
-  - title: Deuteronomy
-    versification: ufw
-    identifier: deu
-    sort: 5
-    path: ./tn_DEU.tsv
-    categories:
-      - bible-ot
-  - title: Joshua
-    versification: ufw
-    identifier: jos
-    sort: 6
-    path: ./tn_JOS.tsv
-    categories:
-      - bible-ot
-  - title: Judges
-    versification: ufw
-    identifier: jdg
-    sort: 7
-    path: ./tn_JDG.tsv
-    categories:
-      - bible-ot
   - title: Ruth
     versification: ufw
     identifier: rut
     sort: 8
     path: ./tn_RUT.tsv
-    categories:
-      - bible-ot
-  - title: 1 Samuel
-    versification: ufw
-    identifier: 1sa
-    sort: 9
-    path: ./tn_1SA.tsv
-    categories:
-      - bible-ot
-  - title: 2 Samuel
-    versification: ufw
-    identifier: 2sa
-    sort: 10
-    path: ./tn_2SA.tsv
-    categories:
-      - bible-ot
-  - title: 1 Kings
-    versification: ufw
-    identifier: 1ki
-    sort: 11
-    path: ./tn_1KI.tsv
-    categories:
-      - bible-ot
-  - title: 2 Kings
-    versification: ufw
-    identifier: 2ki
-    sort: 12
-    path: ./tn_2KI.tsv
-    categories:
-      - bible-ot
-  - title: 1 Chronicles
-    versification: ufw
-    identifier: 1ch
-    sort: 13
-    path: ./tn_1CH.tsv
-    categories:
-      - bible-ot
-  - title: 2 Chronicles
-    versification: ufw
-    identifier: 2ch
-    sort: 14
-    path: ./tn_2CH.tsv
     categories:
       - bible-ot
   - title: Ezra
@@ -527,13 +450,6 @@ projects:
     path: ./tn_JOB.tsv
     categories:
       - bible-ot
-  - title: Psalms
-    versification: ufw
-    identifier: psa
-    sort: 19
-    path: ./tn_PSA.tsv
-    categories:
-      - bible-ot
   - title: Proverbs
     versification: ufw
     identifier: pro
@@ -541,74 +457,11 @@ projects:
     path: ./tn_PRO.tsv
     categories:
       - bible-ot
-  - title: Ecclesiastes
-    versification: ufw
-    identifier: ecc
-    sort: 21
-    path: ./tn_ECC.tsv
-    categories:
-      - bible-ot
   - title: Song of Solomon
     versification: ufw
     identifier: sng
     sort: 22
     path: ./tn_SNG.tsv
-    categories:
-      - bible-ot
-  - title: Isaiah
-    versification: ufw
-    identifier: isa
-    sort: 23
-    path: ./tn_ISA.tsv
-    categories:
-      - bible-ot
-  - title: Jeremiah
-    versification: ufw
-    identifier: jer
-    sort: 24
-    path: ./tn_JER.tsv
-    categories:
-      - bible-ot
-  - title: Lamentations
-    versification: ufw
-    identifier: lam
-    sort: 25
-    path: ./tn_LAM.tsv
-    categories:
-      - bible-ot
-  - title: Ezekiel
-    versification: ufw
-    identifier: ezk
-    sort: 26
-    path: ./tn_EZK.tsv
-    categories:
-      - bible-ot
-  - title: Daniel
-    versification: ufw
-    identifier: dan
-    sort: 27
-    path: ./tn_DAN.tsv
-    categories:
-      - bible-ot
-  - title: Hosea
-    versification: ufw
-    identifier: hos
-    sort: 28
-    path: ./tn_HOS.tsv
-    categories:
-      - bible-ot
-  - title: Joel
-    versification: ufw
-    identifier: jol
-    sort: 29
-    path: ./tn_JOL.tsv
-    categories:
-      - bible-ot
-  - title: Amos
-    versification: ufw
-    identifier: amo
-    sort: 30
-    path: ./tn_AMO.tsv
     categories:
       - bible-ot
   - title: Obadiah
@@ -625,27 +478,6 @@ projects:
     path: ./tn_JON.tsv
     categories:
       - bible-ot
-  - title: Micah
-    versification: ufw
-    identifier: mic
-    sort: 33
-    path: ./tn_MIC.tsv
-    categories:
-      - bible-ot
-  - title: Nahum
-    versification: ufw
-    identifier: nam
-    sort: 34
-    path: ./tn_NAM.tsv
-    categories:
-      - bible-ot
-  - title: Habakkuk
-    versification: ufw
-    identifier: hab
-    sort: 35
-    path: ./tn_HAB.tsv
-    categories:
-      - bible-ot
   - title: Zephaniah
     versification: ufw
     identifier: zep
@@ -658,20 +490,6 @@ projects:
     identifier: hag
     sort: 37
     path: ./tn_HAG.tsv
-    categories:
-      - bible-ot
-  - title: Zechariah
-    versification: ufw
-    identifier: zec
-    sort: 38
-    path: ./tn_ZEC.tsv
-    categories:
-      - bible-ot
-  - title: Malachi
-    versification: ufw
-    identifier: mal
-    sort: 39
-    path: ./tn_MAL.tsv
     categories:
       - bible-ot
   - title: Matthew
