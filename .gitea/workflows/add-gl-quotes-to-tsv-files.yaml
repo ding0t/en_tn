@@ -1,0 +1,52 @@
+name: Add GL Quotes to TSV Files
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  process-tsv:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 'lts/*'
+
+    - name: Install add-gl-quotes-to-tsv-files cli from npmjs.com
+      run: npm install --global add-gl-quotes-to-tsv-files
+
+    - name: Debugging
+      run: |
+        pwd
+        echo "github.workspace: ${{github.workspace}}"
+        echo "github.ref_name: ${{ github.ref_name }}"
+        echo "github.event.repository_name: ${{ github.event.repository.name }}"
+        echo "github.head_ref: ${{ github.head_ref }}"
+        echo `which add-gl-quotes-to-tsv-files`
+        add-gl-quotes-to-tsv-files --help
+        add-gl-quotes-to-tsv-files --version
+
+    - name: Process TSV files
+      run: add-gl-quotes-to-tsv-files
+
+    - name: ls working dir
+      run: ls -l
+
+    - name: Upload as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: '${{ github.event.repository.name }}_${{ github.ref_name }}_with_gl_quotes'
+        path: '${{ github.event.repository.name }}_${{ github.ref_name }}_with_gl_quotes.zip'
+
+    - name: Attach zip file to release if it is a tag
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: akkuman/gitea-release-action@v1
+      with:
+        files: |-
+          *_with_gl_quotes.zip
