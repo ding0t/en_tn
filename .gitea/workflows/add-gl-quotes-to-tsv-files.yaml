@@ -16,17 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 'lts/*'
-
-      - name: Install add-gl-quotes-to-tsv-files cli from npmjs.com
-        run: |
-          npm cache clean --force
-          rm -rf /opt/hostedtoolcache/node/*/x64/lib/node_modules/add-gl-quotes-to-tsv-files || true
-          npm install --global add-gl-quotes-to-tsv-files
-
       - name: Debugging
         run: |
           pwd
@@ -95,9 +84,6 @@ jobs:
             echo "error_content<<EOF" >> $GITHUB_OUTPUT
             echo "$ERROR_CONTENT" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
-
-            # Install gettext package which provides envsubst
-            sudo apt-get update && sudo apt-get install -y gettext-base
           else
             echo "has_errors=false" >> $GITHUB_OUTPUT
               echo "has_errors=false"
