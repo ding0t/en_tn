@@ -10,7 +10,7 @@ on:
 
 jobs:
   process-tsv:
-    runs-on: ubuntu-latest
+    runs-on: add-gl-quotes-to-tsv-files
 
     steps:
       - name: Checkout repository
@@ -70,7 +70,6 @@ jobs:
             *_with_gl_quotes.zip
 
       - name: Check for existing issue
-        if: ${{ always() }}
         id: check_issue
         run: |
           issue_title="TSV%20Generation%20Issues%20for%20${{ github.ref_name }}"
@@ -86,7 +85,6 @@ jobs:
           fi
 
       - name: Check for existing errors
-        if: ${{ always() }}
         id: check_errors
         run: |
           if [ -f "errors.json" ]; then
@@ -106,7 +104,6 @@ jobs:
           fi
 
       - name: Debug 2
-        if: ${{ always() }}
         run: |
           echo "has_errors: ${{ steps.check_errors.outputs.has_errors }}"
           echo "issue_exists: ${{ steps.check_issue.outputs.issue_exists }}"
@@ -147,7 +144,7 @@ jobs:
           echo "github.event.repository.open_issues: ${{ github.event.repository.open_issues }}"
 
       - name: Create issue if errors.json exists
-        if: steps.check_errors.outputs.has_errors == 'true' && steps.check_issue.outputs.issue_exists != 'true'
+        if: steps.check_errors.outputs.has_errors == 'true' && steps.check_issue.outputs.issue_exists == 'false'
         run: |
           # Set environment variables for replacements
           export REF_NAME="${{ github.ref_name }}"
@@ -191,7 +188,7 @@ jobs:
           export ERROR_CONTENT='${{ steps.check_errors.outputs.error_content }}'
 
           # Read the template file and replace environment variables
-          BODY=$(cat .gitea/workflows/tsv_generation_issue_comment.md | 
+          BODY=$(cat .gitea/workflows/tsv_generation_comment.md | 
                 envsubst)
 
           # Create JSON payload for the API request
