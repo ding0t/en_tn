@@ -2206,7 +2206,7 @@ front:intro	rm3n				0	# Introduction to Deuteronomy\n\n## Part 1: General Introd
 25:6	tf4h		rc://*/ta/man/translate/figs-metonymy	will succeed in the name of that man’s dead brother	0	The word “name” is a metonym for the person’s family line. Alternate translation: [will continue the family line of that man’s dead brother]
 25:6	d4l7		rc://*/ta/man/translate/figs-metonymy	so that his name will not perish from Israel	0	The word “name” is a metonym for the person’s family line. Alternate translation: [so that his family line will not disappear from Israel]
 25:7	clc2				0	# General Information:\n\nMoses continues speaking to the people of Israel.
-25:7	hf36		rc://*/ta/man/translate/figs-explicit	must go up to the gate to the elders	0	The full meaning of this statement can be made explicit. Alternate translation: [must go up to the city gate where the elders judge cases]
+25:7	hf36		rc://*/ta/man/translate/figs-explicitinfo	וְ⁠עָלְתָה֩	1	See the Introduction to Deuteronomy for a discussion of the phrase **go up**. Alternate translation: [then & shall go]
 25:7	v965		rc://*/ta/man/translate/figs-metonymy	refuses to raise up for his brother a name	0	Here “name” refers to the memory of someone through his descendants. Alternate translation: [refuses to give his brother a son]
 25:7	d9aj			he will not perform the duty of a husband’s brother to me	0	Alternate translation: [he will not do what a husband’s brother is supposed to do and marry me]
 25:8	sx4h			I do not wish to take her	0	Alternate translation: [I do not wish to marry her]
@@ -2244,6 +2244,7 @@ front:intro	rm3n				0	# Introduction to Deuteronomy\n\n## Part 1: General Introd
 26:5	u2nt		rc://*/ta/man/translate/figs-you		0	# General Information:\n\nMoses speaks to the Israelites as if they were one man, so the words “you” and “your” here are singular.
 26:5	tpv8			My ancestor was a wandering Aramean	0	This is the beginning of the statement that the Israelite male should make when bringing his basket.
 26:5	tq54			a wandering Aramean	0	This refers to Jacob, who was the ancestor of all the Israelites. He lived for many years in Aram-Nahairam, a region located in Syria.
+26:5	ypqf		rc://*/ta/man/translate/figs-explicitinfo	וַ⁠יֵּ֣רֶד 	1	See the Introduction to Deuteronomy for a discussion of the phrase **went down**. Alternate translation: [And he went]
 26:5	k6c8			stayed there	0	Alternate translation: [lived the rest of his life there]
 26:5	fi9k		rc://*/ta/man/translate/figs-metonymy	There he became	0	The word “he” is a metonym for “Jacob’s descendants.”
 26:5	bu5w		rc://*/ta/man/translate/figs-doublet	a great, mighty	0	These words mean basically the same thing. They emphasize that Israel became a large and powerful nation. Alternate translation: [very great]
@@ -2910,6 +2911,7 @@ front:intro	rm3n				0	# Introduction to Deuteronomy\n\n## Part 1: General Introd
 33:29	cur3		rc://*/ta/man/translate/figs-metaphor	the sword of your majesty	0	The word “sword” is a metaphor for the power to kill with the sword in order to win battles. Alternate translation: [the one who enables you to win battles and so have majesty]
 33:29	ly3l			you will trample down their high places	0	This could mean: (1) the Israelites will destroy the places where the other people worship false gods or (2) the Israelites will walk on the backs of their enemies when the Israelites defeat them.
 34:intro	kh67				0	# Deuteronomy 34 Chapter Introduction\n\n## Structure and Formatting\n\nThis chapter may have been written by Joshua, since it recorded Moses’ death. This chapter officially ends the revelation of the law of Moses, and life in the Promised Land is about to begin again. (See: [[rc://*/tw/dict/bible/kt/reveal]] and [[rc://*/tw/dict/bible/kt/lawofmoses]] and [[rc://*/tw/dict/bible/kt/promisedland]])
+34:1	bfv9		rc://*/ta/man/translate/figs-explicitinfo	וַ⁠יַּ֨עַל מֹשֶׁ֜ה	1	See the Introduction to Deuteronomy for a discussion of the phrase **went up**. Alternate translation: [Then Moses went]
 34:1	ayb8			Mount Nebo	0	This is the highest point of Mount Pisgah which is in the northern part of the Abarim mountain range. See how you translated this in [Deuteronomy 32:49](../32/49.md).
 34:1	r9wl			Pisgah	0	See how you translated this in [Deuteronomy 3:17](../03/17.md).
 34:3	h1nc		rc://*/ta/man/translate/translate-names	the City of Palms	0	This is another name for Jericho.
