@@ -139,4 +139,3 @@ As a translator of UTN into a GL, you may need to [add new notes](https://gl-man
 ## License
 
 See the [LICENSE](https://git.door43.org/Door43/tn-en/src/master/LICENSE.md) file for licensing information.
-
