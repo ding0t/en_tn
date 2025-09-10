@@ -57,7 +57,7 @@ jobs:
 
       - name: Upload as artifact
         if: steps.check_zip.outputs.zip_exists == 'true'
-        uses: actions/upload-artifact@v3
+        uses: christopherhx/gitea-upload-artifact@v4
         with:
           name: '${{ github.event.repository.name }}_${{ github.ref_name }}_with_gl_quotes'
           path: '${{ github.event.repository.name }}_${{ github.ref_name }}_with_gl_quotes.zip'
