@@ -41,7 +41,7 @@ jobs:
           add-gl-quotes-to-tsv-files --version
 
       - name: Process TSV files
-        run: add-gl-quotes-to-tsv-files
+        run: add-gl-quotes-to-tsv-files --zip
 
       - name: ls working dir
         run: ls -l
