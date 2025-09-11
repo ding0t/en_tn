@@ -48,7 +48,7 @@ jobs:
             echo "zip_exists=false" >> $GITHUB_OUTPUT
           fi
 
-     - name: Upload ZIP to S3
+      - name: Upload ZIP to S3
         if: steps.check_zip.outputs.zip_exists == 'true' && secrets.AWS_BUCKET != ''
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
