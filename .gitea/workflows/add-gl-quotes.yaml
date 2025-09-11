@@ -48,6 +48,39 @@ jobs:
             echo "zip_exists=false" >> $GITHUB_OUTPUT
           fi
 
+     - name: Upload ZIP to S3
+        if: steps.check_zip.outputs.zip_exists == 'true' && secrets.AWS_BUCKET != ''
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AWS_BUCKET:-}" ]; then
+            echo "AWS_BUCKET secret not set; skipping S3 upload."
+            exit 0
+          fi
+          echo "Uploading ZIP file(s) to s3://$AWS_BUCKET/dcs/"
+          if ! command -v aws >/dev/null 2>&1; then
+            echo "AWS CLI not found; installing AWS CLI v2 (bundled)"
+            curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            if command -v unzip >/dev/null 2>&1; then
+              unzip -q awscliv2.zip
+            else
+              echo "'unzip' not found; extracting with Python"
+              python3 -c "import zipfile; zipfile.ZipFile('awscliv2.zip').extractall('.')"
+            fi
+            ./aws/install -i "$PWD/aws-cli" -b "$PWD/bin"
+            export PATH="$PWD/bin:$PATH"
+          fi
+          for f in *_with_gl_quotes.zip; do
+            [ -e "$f" ] || continue
+            echo "Uploading $f -> s3://$AWS_BUCKET/dcs/$f"
+            aws s3 cp "$f" "s3://$AWS_BUCKET/dcs/$f" --only-show-errors --content-type application/zip
+          done
+
       - name: Attach zip file to release if it is a tag
         if: steps.check_zip.outputs.zip_exists == 'true' && startsWith(github.ref, 'refs/tags/')
         uses: akkuman/gitea-release-action@v1
