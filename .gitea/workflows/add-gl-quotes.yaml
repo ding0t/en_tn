@@ -63,7 +63,7 @@ jobs:
             *_with_gl_quotes.zip
 
       - name: Removes zip file for upload as artifact
-        run: rm *.zip && ls -l
+        run: rm *.zip && rm -rf .git && ls -l
 
       - name: Upload as artifact
         uses: christopherhx/gitea-upload-artifact@v4
