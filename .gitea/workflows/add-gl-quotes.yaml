@@ -10,8 +10,6 @@ on:
 
 jobs:
   process-tsv:
-    runs-on: add-gl-quotes-to-tsv-files
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -25,6 +23,7 @@ jobs:
         run: |
           npm cache clean --force
           rm -rf /opt/hostedtoolcache/node/*/x64/lib/node_modules/add-gl-quotes-to-tsv-files || true
+          rm -rf /opt/hostedtoolcache/node/*/x64/lib/node_modules/.add-gl-quotes-to-tsv-files* || true
           npm install --global add-gl-quotes-to-tsv-files
 
       - name: Debugging
