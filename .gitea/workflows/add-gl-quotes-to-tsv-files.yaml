@@ -41,7 +41,7 @@ jobs:
           add-gl-quotes-to-tsv-files --version
 
       - name: Process TSV files
-        run: add-gl-quotes-to-tsv-files --zip
+        run: add-gl-quotes-to-tsv-files --zip --tsv --debug --verbose
 
       - name: ls working dir
         run: ls -l
@@ -55,13 +55,6 @@ jobs:
             echo "zip_exists=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Upload as artifact
-        if: steps.check_zip.outputs.zip_exists == 'true'
-        uses: christopherhx/gitea-upload-artifact@v4
-        with:
-          name: '${{ github.event.repository.name }}_${{ github.ref_name }}_with_gl_quotes'
-          path: '${{ github.event.repository.name }}_${{ github.ref_name }}_with_gl_quotes.zip'
-
       - name: Attach zip file to release if it is a tag
         if: steps.check_zip.outputs.zip_exists == 'true' && startsWith(github.ref, 'refs/tags/')
         uses: akkuman/gitea-release-action@v1
@@ -69,161 +62,11 @@ jobs:
           files: |-
             *_with_gl_quotes.zip
 
-      - name: Check for existing issue
-        id: check_issue
-        run: |
-          issue_title="TSV%20Generation%20Issues%20for%20${{ github.ref_name }}"
-          echo "issue_title=${issue_title}"
-          existing_issues=$(curl --silent --fail --request GET --url "${{ github.server_url }}/api/v1/repos/${{ github.repository }}/issues?state=open&q=${issue_title}" || echo '[]')
-          issue_exists=$(echo "$existing_issues" | jq 'length > 0')
-          echo "issue_exists=${issue_exists}" >> $GITHUB_OUTPUT
-          echo "issue_exists=${issue_exists}"
-          if [ "$issue_exists" = "true" ]; then
-            # Get the first issue number
-            issue_number=$(echo "$existing_issues" | jq '.[0].number')
-            echo "issue_number=${issue_number}" >> $GITHUB_OUTPUT
-          fi
+      - name: Removes zip file for upload as artifact
+        run: rm *.zip && ls -l
 
-      - name: Check for existing errors
-        id: check_errors
-        run: |
-          if [ -f "errors.json" ]; then
-            echo "has_errors=true" >> $GITHUB_OUTPUT
-            echo "has_errors=true"
-            # Save error content to a file for the actions to use
-            ERROR_CONTENT=$(cat errors.json)
-            echo "error_content<<EOF" >> $GITHUB_OUTPUT
-            echo "$ERROR_CONTENT" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-
-            # Install gettext package which provides envsubst
-            sudo apt-get update && sudo apt-get install -y gettext-base
-          else
-            echo "has_errors=false" >> $GITHUB_OUTPUT
-              echo "has_errors=false"
-          fi
-
-      - name: Debug 2
-        run: |
-          echo "has_errors: ${{ steps.check_errors.outputs.has_errors }}"
-          echo "issue_exists: ${{ steps.check_issue.outputs.issue_exists }}"
-          echo "issue_number: ${{ steps.check_issue.outputs.issue_number }}"
-          echo "error_content: ${{ steps.check_errors.outputs.error_content }}"
-          echo "GITHUB_SERVER_URL: ${{ github.server_url }}"
-          echo "vars.TSV_ISSUE_ASSIGNEES: ${{ vars.TSV_ISSUE_ASSIGNEES }}"
-          echo "github.workspace: ${{github.workspace}}"
-          echo "github.ref_name: ${{ github.ref_name }}"
-          echo "github.event.repository_name: ${{ github.event.repository.name }}"
-          echo "github.head_ref: ${{ github.head_ref }}"
-          echo "github.sha: ${{ github.sha }}"
-          echo "github.event_name: ${{ github.event_name }}"
-          echo "github.actor: ${{ github.actor }}"
-          echo "github.event.action: ${{ github.event.action }}"
-          echo "github.event.repository.full_name: ${{ github.event.repository.full_name }}"
-          echo "github.event.repository.name: ${{ github.event.repository.name }}"
-          echo "github.event.repository.owner.login: ${{ github.event.repository.owner.login }}"
-          echo "github.event.repository.owner.id: ${{ github.event.repository.owner.id }}"
-          echo "github.event.repository.owner.type: ${{ github.event.repository.owner.type }}"
-          echo "github.event.repository.owner.site_admin: ${{ github.event.repository.owner.site_admin }}"
-          echo "github.event.repository.private: ${{ github.event.repository.private }}"
-          echo "github.event.repository.html_url: ${{ github.event.repository.html_url }}"
-          echo "github.event.repository.clone_url: ${{ github.event.repository.clone_url }}"
-          echo "github.event.repository.ssh_url: ${{ github.event.repository.ssh_url }}"
-          echo "github.event.repository.git_url: ${{ github.event.repository.git_url }}"
-          echo "github.event.repository.default_branch: ${{ github.event.repository.default_branch }}"
-          echo "github.event.repository.created_at: ${{ github.event.repository.created_at }}"
-          echo "github.event.repository.updated_at: ${{ github.event.repository.updated_at }}"
-          echo "github.event.repository.pushed_at: ${{ github.event.repository.pushed_at }}"
-          echo "github.event.repository.size: ${{ github.event.repository.size }}"
-          echo "github.event.repository.stargazers_count: ${{ github.event.repository.stargazers_count }}"
-          echo "github.event.repository.watchers_count: ${{ github.event.repository.watchers_count }}"
-          echo "github.event.repository.language: ${{ github.event.repository.language }}"
-          echo "github.event.repository.forks_count: ${{ github.event.repository.forks_count }}"
-          echo "github.event.repository.open_issues_count: ${{ github.event.repository.open_issues_count }}"
-          echo "github.event.repository.has_issues: ${{ github.event.repository.has_issues }}"
-          echo "github.event.repository.open_issues: ${{ github.event.repository.open_issues }}"
-
-      - name: Create issue if errors.json exists
-        if: steps.check_errors.outputs.has_errors == 'true' && steps.check_issue.outputs.issue_exists == 'false'
-        run: |
-          # Set environment variables for replacements
-          export REF_NAME="${{ github.ref_name }}"
-          export COMMIT_SHA="${{ github.sha }}"
-          export ERROR_CONTENT='${{ steps.check_errors.outputs.error_content }}'
-          export WORKFLOW_NAME="${{ github.workflow }}"
-          export REPO_NAME="${{ github.event.repository.name }}"
-
-          # Read the template file and replace environment variables
-          BODY=$(cat .gitea/workflows/tsv_generation_issue.md | 
-                envsubst)
-
-          # Create JSON payload for the API request
-          JSON_DATA=$(jq -n \
-            --arg title "TSV Generation Issues for ${{ github.ref_name }}" \
-            --arg body "$BODY" \
-            '{title: $title, assignees: ${{ vars.TSV_ISSUE_ASSIGNEES }}, body: $body}')
-
-          # Write JSON payload to file
-          echo "$JSON_DATA" > create_issue.json
-
-          # Display the contents of the JSON file for debugging
-          echo "Contents of create_issue.json:"
-          cat create_issue.json
-
-          # Send API request
-          echo "Creating issue with title: TSV Generation Issues for ${{ github.ref_name }}"
-          curl --verbose --request POST \
-            --url "${{ github.server_url }}/api/v1/repos/${{ github.repository }}/issues" \
-            --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "content-type: application/json" \
-            --data @create_issue.json \
-            --fail
-
-      - name: Add comment to issue if issue exists and errors.json exists
-        if: steps.check_errors.outputs.has_errors == 'true' && steps.check_issue.outputs.issue_exists == 'true'
-        run: |
-          # Set environment variables for replacements
-          export REF_NAME="${{ github.ref_name }}"
-          export COMMIT_SHA="${{ github.sha }}"
-          export ERROR_CONTENT='${{ steps.check_errors.outputs.error_content }}'
-
-          # Read the template file and replace environment variables
-          BODY=$(cat .gitea/workflows/tsv_generation_comment.md | 
-                envsubst)
-
-          # Create JSON payload for the API request
-          JSON_DATA=$(jq -n --arg body "$BODY" '{body: $body}')
-
-          # Write JSON payload to file
-          echo "$JSON_DATA" > comment.json
-
-          # Display the contents of the JSON file for debugging
-          echo "Contents of comment.json:"
-          cat comment.json
-
-          # Send API request
-          echo "Adding comment to issue number: ${{ steps.check_issue.outputs.issue_number }}"
-          curl --request POST \
-            --url "${{ github.server_url }}/api/v1/repos/${{ github.repository }}/issues/${{ steps.check_issue.outputs.issue_number }}/comments" \
-            --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "content-type: application/json" \
-            --data @comment.json \
-            --fail
-
-      - name: Close issue if no errors
-        if: steps.check_errors.outputs.has_errors == 'false' && steps.check_issue.outputs.issue_exists == 'true'
-        run: |
-          # Close the issue
-          echo "Closing issue number: ${{ steps.check_issue.outputs.issue_number }}"
-          curl --request POST \
-            --url "${{ github.server_url }}/api/v1/repos/${{ github.repository }}/issues/${{ steps.check_issue.outputs.issue_number }}/comments" \
-            --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "content-type: application/json" \
-            --data '{"body": "Closing automatically since all errors were fixed."}' \
-            --fail
-          curl --request PATCH \
-            --url "${{ github.server_url }}/api/v1/repos/${{ github.repository }}/issues/${{ steps.check_issue.outputs.issue_number }}" \
-            --header "authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            --header "content-type: application/json" \
-            --data '{"state": "closed"}' \
-            --fail
+      - name: Upload as artifact
+        uses: christopherhx/gitea-upload-artifact@v4
+        with:
+          name: '${{ github.event.repository.name }}_${{ github.ref_name }}_with_gl_quotes'
+          path: '.'      
