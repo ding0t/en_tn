@@ -66,7 +66,7 @@ jobs:
             echo "AWS_BUCKET secret not set; skipping S3 upload."
             exit 0
           fi
-          echo "Uploading ZIP file(s) to s3://$AWS_BUCKET/dcs/"
+          echo "Uploading ZIP file(s) to s3://$AWS_BUCKET/dcs/artifact_uploads/"
           if ! command -v aws >/dev/null 2>&1; then
             echo "AWS CLI not found; installing AWS CLI v2 (bundled)"
             curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -81,8 +81,8 @@ jobs:
           fi
           for f in *_with_gl_quotes.zip; do
             [ -e "$f" ] || continue
-            echo "Uploading $f -> s3://$AWS_BUCKET/dcs/$f"
-            aws s3 cp "$f" "s3://$AWS_BUCKET/dcs/$f" --only-show-errors --content-type application/zip
+            echo "Uploading $f -> s3://$AWS_BUCKET/dcs/artifact_uploads/$f"
+            aws s3 cp "$f" "s3://$AWS_BUCKET/dcs/artifact_uploads/$f" --only-show-errors --content-type application/zip
           done
 
       - name: Attach zip file to release if it is a tag
