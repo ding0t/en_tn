@@ -386,17 +386,17 @@ dublin_core:
     - en/ta
     - en/tq
     - en/tw
-    - hbo/uhb?v=2.1.30
+    - hbo/uhb?v=2.1.31
     - el-x-koine/ugnt?v=0.34
   rights: CC BY-SA 4.0
   source:
     - identifier: tn
       language: en
-      version: '86'
+      version: '87'
   subject: TSV Translation Notes
   title: unfoldingWord® Translation Notes
   type: help
-  version: '87'
+  version: '88'
 checking:
   checking_entity:
     - unfoldingWord
@@ -421,6 +421,13 @@ projects:
     identifier: lev
     sort: 3
     path: ./tn_LEV.tsv
+    categories:
+      - bible-ot
+  - title: Deuteronomy
+    versification: ufw
+    identifier: deu
+    sort: 4 
+    path: ./tn_DEU.tsv
     categories:
       - bible-ot
   - title: Joshua
