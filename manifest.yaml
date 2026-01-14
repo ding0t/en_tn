@@ -373,12 +373,12 @@ dublin_core:
     translation decisions.
   format: text/tsv
   identifier: tn
-  issued: '2025-08-01'
+  issued: '2026-01-14'
   language:
     direction: ltr
     identifier: en
     title: English
-  modified: '2025-08-01'
+  modified: '2026-01-14'
   publisher: unfoldingWord
   relation:
     - en/ult
@@ -386,17 +386,17 @@ dublin_core:
     - en/ta
     - en/tq
     - en/tw
-    - hbo/uhb?v=2.1.30
+    - hbo/uhb?v=2.1.31
     - el-x-koine/ugnt?v=0.34
   rights: CC BY-SA 4.0
   source:
     - identifier: tn
       language: en
-      version: '85'
+      version: '87'
   subject: TSV Translation Notes
   title: unfoldingWord® Translation Notes
   type: help
-  version: '86'
+  version: '88'
 checking:
   checking_entity:
     - unfoldingWord
