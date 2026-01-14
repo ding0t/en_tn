@@ -426,7 +426,7 @@ projects:
   - title: Deuteronomy
     versification: ufw
     identifier: deu
-    sort: 4 
+    sort: 5 
     path: ./tn_DEU.tsv
     categories:
       - bible-ot
@@ -470,6 +470,13 @@ projects:
     identifier: 1ki
     sort: 11
     path: ./tn_1KI.tsv
+    categories:
+      - bible-ot
+  - title: 2 Kings
+    versification: ufw
+    identifier: 2ki
+    sort: 12
+    path: ./tn_2KI.tsv
     categories:
       - bible-ot
   - title: Ezra
