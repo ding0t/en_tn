@@ -10,6 +10,7 @@ on:
 
 jobs:
   process-tsv:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
