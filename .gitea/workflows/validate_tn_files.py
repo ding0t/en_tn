@@ -25,77 +25,6 @@ EXPECTED_HEADER = [
     "Note",
 ]
 
-EXPECTED_BOOK_CODES = [
-    "GEN",
-    "EXO",
-    "LEV",
-    "NUM",
-    "DEU",
-    "JOS",
-    "JDG",
-    "RUT",
-    "1SA",
-    "2SA",
-    "1KI",
-    "2KI",
-    "1CH",
-    "2CH",
-    "EZR",
-    "NEH",
-    "EST",
-    "JOB",
-    "PSA",
-    "PRO",
-    "ECC",
-    "SNG",
-    "ISA",
-    "JER",
-    "LAM",
-    "EZK",
-    "DAN",
-    "HOS",
-    "JOL",
-    "AMO",
-    "OBA",
-    "JON",
-    "MIC",
-    "NAM",
-    "HAB",
-    "ZEP",
-    "HAG",
-    "ZEC",
-    "MAL",
-    "MAT",
-    "MRK",
-    "LUK",
-    "JHN",
-    "ACT",
-    "ROM",
-    "1CO",
-    "2CO",
-    "GAL",
-    "EPH",
-    "PHP",
-    "COL",
-    "1TH",
-    "2TH",
-    "1TI",
-    "2TI",
-    "TIT",
-    "PHM",
-    "HEB",
-    "JAS",
-    "1PE",
-    "2PE",
-    "1JN",
-    "2JN",
-    "3JN",
-    "JUD",
-    "REV",
-]
-
-EXPECTED_66_FILENAMES = {f"tn_{code}.tsv" for code in EXPECTED_BOOK_CODES}
-
 ID_RE = re.compile(r"^[a-z][a-z0-9]{3}$")
 REFERENCE_RE = re.compile(
     r"^(?:front:intro|\d+:intro|\d+:front|\d+:\d+(?:[,-][\d,:-]*\d+)*)$"
@@ -106,7 +35,7 @@ ALT_TRANSLATION_LABEL_RE = re.compile(r"Alternat(e|ive)( *)([Tt])ranslation")
 DUPLICATE_ALT_TRANSLATION_LABEL_RE = re.compile(r"Alternate translation.{0,2} [Aa]lternat")
 
 CHECK_VALID_MANIFEST = "1. Valid Manifest File Check"
-CHECK_66_TSV_FILES = "2. 66 TSV File Check"
+CHECK_PROJECT_TSV_FILES_EXIST = "2. Project TSV Files Exist Check"
 CHECK_NUM_COLUMNS = "3. Number of Columns Check"
 CHECK_TSV_HEADER = "4. TSV Header Check"
 CHECK_ID = "5. ID Check"
@@ -120,7 +49,7 @@ CHECK_ALT_TRANSLATION_LABEL = "12. Alternate translation Label Check"
 CHECK_PAIRED_SQUARE_BRACKET = "13. Paired Square Bracket Check"
 CHECK_NUMBER_TO_NAME = {
     1: CHECK_VALID_MANIFEST,
-    2: CHECK_66_TSV_FILES,
+    2: CHECK_PROJECT_TSV_FILES_EXIST,
     3: CHECK_NUM_COLUMNS,
     4: CHECK_TSV_HEADER,
     5: CHECK_ID,
@@ -242,21 +171,21 @@ def parse_manifest_project_paths(
     projects = manifest_data.get("projects")
     manifest_paths: list[str] = []
     if not isinstance(projects, list):
-        errors.add(rule=CHECK_66_TSV_FILES, message="manifest.yaml key 'projects' must be a list.")
+        errors.add(rule=CHECK_PROJECT_TSV_FILES_EXIST, message="manifest.yaml key 'projects' must be a list.")
         return set(), manifest_paths
 
     for idx, project in enumerate(projects, start=1):
         if not isinstance(project, dict):
-            errors.add(rule=CHECK_66_TSV_FILES, message=f"manifest project #{idx} is not an object.")
+            errors.add(rule=CHECK_PROJECT_TSV_FILES_EXIST, message=f"manifest project #{idx} is not an object.")
             continue
         raw_path = project.get("path")
         if not isinstance(raw_path, str) or not raw_path.strip():
-            errors.add(rule=CHECK_66_TSV_FILES, message=f"manifest project #{idx} has no valid 'path'.")
+            errors.add(rule=CHECK_PROJECT_TSV_FILES_EXIST, message=f"manifest project #{idx} has no valid 'path'.")
             continue
         path = normalize_repo_path(raw_path)
         if not path.lower().endswith(".tsv"):
             errors.add(
-                rule=CHECK_66_TSV_FILES,
+                rule=CHECK_PROJECT_TSV_FILES_EXIST,
                 message=f"manifest project path '{raw_path}' is not a .tsv file path.",
             )
             continue
@@ -271,7 +200,7 @@ def parse_manifest_project_paths(
                 duplicates.append(path)
             seen.add(path)
         errors.add(
-            rule=CHECK_66_TSV_FILES,
+            rule=CHECK_PROJECT_TSV_FILES_EXIST,
             message=f"manifest has duplicate project path(s): {', '.join(sorted(duplicates))}",
         )
     return deduped, manifest_paths
@@ -284,7 +213,7 @@ def validate_manifest_vs_repo(
     missing_in_repo = sorted(path for path in manifest_tsv_paths if not Path(path).is_file())
     if missing_in_repo:
         errors.add(
-            rule=CHECK_66_TSV_FILES,
+            rule=CHECK_PROJECT_TSV_FILES_EXIST,
             message=(
                 "Files listed in manifest projects but missing in repo: "
                 + ", ".join(missing_in_repo)
@@ -910,17 +839,17 @@ def main() -> int:
     manifest_data: dict[str, Any] | None = None
 
     need_manifest = (
-        CHECK_VALID_MANIFEST in enabled_checks or CHECK_66_TSV_FILES in enabled_checks
+        CHECK_VALID_MANIFEST in enabled_checks or CHECK_PROJECT_TSV_FILES_EXIST in enabled_checks
     )
     if need_manifest:
         manifest_data = load_manifest(manifest_path, errors)
 
     tsv_files: list[Path] = sorted(Path(".").glob("tn_*.tsv"))
 
-    if CHECK_66_TSV_FILES in enabled_checks:
+    if CHECK_PROJECT_TSV_FILES_EXIST in enabled_checks:
         if manifest_data is None:
             errors.add(
-                rule=CHECK_66_TSV_FILES,
+                rule=CHECK_PROJECT_TSV_FILES_EXIST,
                 message="Cannot run 66 TSV File Check because manifest.yaml could not be parsed.",
             )
         else:
