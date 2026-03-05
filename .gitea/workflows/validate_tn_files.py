@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import re
 import sys
@@ -47,6 +48,7 @@ CHECK_NOTE_ENDING = "10. Note Ending Check"
 CHECK_REFERENCE_ORDER = "11. Reference Order Check"
 CHECK_ALT_TRANSLATION_LABEL = "12. Alternate translation Label Check"
 CHECK_PAIRED_SQUARE_BRACKET = "13. Paired Square Bracket Check"
+CHECK_DUPLICATE_ID = "14. Duplicate ID Check"
 CHECK_NUMBER_TO_NAME = {
     1: CHECK_VALID_MANIFEST,
     2: CHECK_PROJECT_TSV_FILES_EXIST,
@@ -61,6 +63,7 @@ CHECK_NUMBER_TO_NAME = {
     11: CHECK_REFERENCE_ORDER,
     12: CHECK_ALT_TRANSLATION_LABEL,
     13: CHECK_PAIRED_SQUARE_BRACKET,
+    14: CHECK_DUPLICATE_ID,
 }
 CHECK_DISPLAY_ORDER = [CHECK_NUMBER_TO_NAME[i] for i in sorted(CHECK_NUMBER_TO_NAME.keys())]
 
@@ -571,7 +574,7 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
             )
         elif row_id in seen_ids:
             errors.add(
-                rule=CHECK_ID,
+                rule=CHECK_DUPLICATE_ID,
                 **row_context,
                 message=f"ID '{row_id}' is duplicated in this file.",
             )
@@ -694,9 +697,39 @@ def _group_errors_by_check(
     return grouped
 
 
-def emit_results(errors: ErrorCollector, active_checks: list[str]) -> int:
+def _json_output_by_check(
+    grouped_errors: dict[str, list[ValidationError]], active_checks: list[str]
+) -> dict[str, Any]:
+    output: dict[str, Any] = {}
+    for check_name in active_checks:
+        check_number = str(_check_number(check_name))
+        output[check_number] = {
+            "name": check_name,
+            "errors": [
+                {
+                    "file": err.file,
+                    "line": err.line,
+                    "id": err.row_id,
+                    "ref": err.reference,
+                    "message": err.message,
+                }
+                for err in grouped_errors.get(check_name, [])
+            ],
+        }
+    return output
+
+
+def emit_results(errors: ErrorCollector, active_checks: list[str], output_json: bool = False) -> int:
     ordered_errors = sorted(errors.errors, key=_error_sort_key)
     grouped_errors = _group_errors_by_check(ordered_errors, active_checks)
+
+    if output_json:
+        print(json.dumps(_json_output_by_check(grouped_errors, active_checks), ensure_ascii=False))
+        if errors.has_errors():
+            write_step_summary(success=False, errors=ordered_errors, truncated=errors.truncated)
+            return 1
+        write_step_summary(success=True, errors=[])
+        return 0
 
     if errors.has_errors():
         print(f"Validation failed with {len(ordered_errors)} error(s).")
@@ -825,6 +858,18 @@ def main() -> int:
         type=int,
         help="Check number to run (repeatable). Example: --check 1 --check 4",
     )
+    parser.add_argument(
+        "--book",
+        dest="books",
+        action="append",
+        help="Book identifier to validate TSV content checks for (repeatable, case-insensitive).",
+    )
+    parser.add_argument(
+        "--json",
+        dest="json_output",
+        action="store_true",
+        help="Output validation results as JSON instead of human-readable text.",
+    )
     args = parser.parse_args()
 
     try:
@@ -834,12 +879,17 @@ def main() -> int:
         return 2
 
     enabled_checks = set(active_checks)
+    selected_books = sorted(
+        {book.strip().lower() for book in (args.books or []) if isinstance(book, str) and book.strip()}
+    )
     errors = ErrorCollector(max_errors=max(1, args.max_errors), enabled_checks=enabled_checks)
     manifest_path = Path(args.manifest)
     manifest_data: dict[str, Any] | None = None
 
     need_manifest = (
-        CHECK_VALID_MANIFEST in enabled_checks or CHECK_PROJECT_TSV_FILES_EXIST in enabled_checks
+        CHECK_VALID_MANIFEST in enabled_checks
+        or CHECK_PROJECT_TSV_FILES_EXIST in enabled_checks
+        or bool(selected_books)
     )
     if need_manifest:
         manifest_data = load_manifest(manifest_path, errors)
@@ -850,7 +900,7 @@ def main() -> int:
         if manifest_data is None:
             errors.add(
                 rule=CHECK_PROJECT_TSV_FILES_EXIST,
-                message="Cannot run 66 TSV File Check because manifest.yaml could not be parsed.",
+                message="Cannot run Project TSV Files Exist Check because manifest.yaml could not be parsed.",
             )
         else:
             manifest_tsv_paths, _manifest_paths_ordered = parse_manifest_project_paths(manifest_data, errors)
@@ -858,6 +908,54 @@ def main() -> int:
                 manifest_tsv_paths=manifest_tsv_paths,
                 errors=errors,
             )
+
+    if selected_books:
+        if manifest_data is None:
+            errors.add(
+                rule=CHECK_PROJECT_TSV_FILES_EXIST,
+                message="Cannot resolve --book values because manifest.yaml could not be parsed.",
+            )
+            tsv_files = []
+        else:
+            projects = manifest_data.get("projects")
+            if not isinstance(projects, list):
+                errors.add(
+                    rule=CHECK_PROJECT_TSV_FILES_EXIST,
+                    message="Cannot resolve --book values because manifest.yaml key 'projects' is not a list.",
+                )
+                tsv_files = []
+            else:
+                identifier_to_path: dict[str, str] = {}
+                for project in projects:
+                    if not isinstance(project, dict):
+                        continue
+                    identifier = project.get("identifier")
+                    raw_path = project.get("path")
+                    if isinstance(identifier, str) and isinstance(raw_path, str) and raw_path.strip():
+                        identifier_to_path[identifier.lower()] = normalize_repo_path(raw_path)
+
+                unknown_books = sorted(book for book in selected_books if book not in identifier_to_path)
+                if unknown_books:
+                    errors.add(
+                        rule=CHECK_PROJECT_TSV_FILES_EXIST,
+                        message=(
+                            "--book value(s) not found in manifest project identifiers: "
+                            + ", ".join(unknown_books)
+                        ),
+                    )
+
+                selected_paths = [identifier_to_path[book] for book in selected_books if book in identifier_to_path]
+                missing_selected_paths = [path for path in selected_paths if not Path(path).is_file()]
+                if missing_selected_paths:
+                    errors.add(
+                        rule=CHECK_PROJECT_TSV_FILES_EXIST,
+                        message=(
+                            "Selected --book project path(s) are missing in repo: "
+                            + ", ".join(sorted(missing_selected_paths))
+                        ),
+                    )
+
+                tsv_files = [Path(path) for path in selected_paths if Path(path).is_file()]
 
     need_tsv_content_checks = any(
         check in enabled_checks
@@ -873,13 +971,14 @@ def main() -> int:
             CHECK_REFERENCE_ORDER,
             CHECK_ALT_TRANSLATION_LABEL,
             CHECK_PAIRED_SQUARE_BRACKET,
+            CHECK_DUPLICATE_ID,
         ]
     )
     if need_tsv_content_checks:
         for tsv_path in tsv_files:
             validate_tsv_file(tsv_path, errors)
 
-    return emit_results(errors, active_checks)
+    return emit_results(errors, active_checks, output_json=args.json_output)
 
 
 if __name__ == "__main__":
