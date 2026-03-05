@@ -363,7 +363,7 @@ def validate_alternate_translation_label(
             next_char = ""
         else:
             next_char = note[label_end]
-        if next_char not in {":", ",", " "}:
+        if next_char not in {":", ",", " ", "s"}:
             pretty_next = next_char if next_char else "(end of note)"
             errors.add(
                 rule=CHECK_ALT_TRANSLATION_LABEL,
