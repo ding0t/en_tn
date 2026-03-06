@@ -49,6 +49,7 @@ CHECK_REFERENCE_ORDER = "11. Reference Order Check"
 CHECK_ALT_TRANSLATION_LABEL = "12. Alternate translation Label Check"
 CHECK_PAIRED_SQUARE_BRACKET = "13. Paired Square Bracket Check"
 CHECK_DUPLICATE_ID = "14. Duplicate ID Check"
+CHECK_STRAIGHT_QUOTES = "15. Straight Quotes Check"
 CHECK_NUMBER_TO_NAME = {
     1: CHECK_VALID_MANIFEST,
     2: CHECK_PROJECT_TSV_FILES_EXIST,
@@ -64,6 +65,7 @@ CHECK_NUMBER_TO_NAME = {
     12: CHECK_ALT_TRANSLATION_LABEL,
     13: CHECK_PAIRED_SQUARE_BRACKET,
     14: CHECK_DUPLICATE_ID,
+    15: CHECK_STRAIGHT_QUOTES,
 }
 CHECK_DISPLAY_ORDER = [CHECK_NUMBER_TO_NAME[i] for i in sorted(CHECK_NUMBER_TO_NAME.keys())]
 
@@ -504,6 +506,22 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
 
         row = parse_tsv_row(raw_line, file_name, line_number, errors)
         if row is None:
+            if "'" in raw_line or '"' in raw_line:
+                found = []
+                if "'" in raw_line:
+                    found.append("single quote (')")
+                if '"' in raw_line:
+                    found.append('double quote (")')
+                errors.add(
+                    rule=CHECK_STRAIGHT_QUOTES,
+                    file=file_name,
+                    line=line_number,
+                    message=(
+                        "This row contains straight "
+                        + " and ".join(found)
+                        + ". Use only curly quotes in TSV content."
+                    ),
+                )
             continue
 
         if len(row) != 7:
@@ -517,6 +535,24 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
                 reference=row_reference,
                 message=f"Expected 7 columns but found {len(row)}.",
             )
+            if "'" in raw_line or '"' in raw_line:
+                found = []
+                if "'" in raw_line:
+                    found.append("single quote (')")
+                if '"' in raw_line:
+                    found.append('double quote (")')
+                errors.add(
+                    rule=CHECK_STRAIGHT_QUOTES,
+                    file=file_name,
+                    line=line_number,
+                    row_id=row_id,
+                    reference=row_reference,
+                    message=(
+                        "This row contains straight "
+                        + " and ".join(found)
+                        + ". Use only curly quotes in TSV content."
+                    ),
+                )
             continue
 
         reference, row_id, _tags, support_reference, _quote, occurrence, note = row
@@ -526,6 +562,21 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
             "row_id": row_id,
             "reference": reference,
         }
+        if "'" in raw_line or '"' in raw_line:
+            found = []
+            if "'" in raw_line:
+                found.append("single quote (')")
+            if '"' in raw_line:
+                found.append('double quote (")')
+            errors.add(
+                rule=CHECK_STRAIGHT_QUOTES,
+                **row_context,
+                message=(
+                    "This row contains straight "
+                    + " and ".join(found)
+                    + ". Use only curly quotes in TSV content."
+                ),
+            )
 
         if "\\n" in reference:
             errors.add(
@@ -972,6 +1023,7 @@ def main() -> int:
             CHECK_ALT_TRANSLATION_LABEL,
             CHECK_PAIRED_SQUARE_BRACKET,
             CHECK_DUPLICATE_ID,
+            CHECK_STRAIGHT_QUOTES,
         ]
     )
     if need_tsv_content_checks:
