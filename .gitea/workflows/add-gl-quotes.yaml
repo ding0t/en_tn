@@ -1,11 +1,11 @@
 name: Add GL Quotes to TSV Files
 
 on:
-  push:
-    branches:
-      - 'master'
-    tags:
-      - '*'
+  # push:
+  #   branches:
+  #     - 'master'
+  #   tags:
+  #     - '*'
   workflow_dispatch:
 
 jobs:
