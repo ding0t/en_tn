@@ -1,0 +1,10 @@
+on:
+  schedule:
+    - cron: 'TZ=America/New York 0 14 * * *' # every day at 2:00pm
+
+jobs:
+  crontest:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Running cron by a ${{ github.event_name }} event."
+      - run: echo "The time is $(date)"
