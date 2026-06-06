@@ -135,11 +135,7 @@ class ErrorCollector:
 
 @dataclass
 class ReferenceOrderKey:
-    chapter_value: int
-    verse_rank: int
-    verse_number: int
-    chapter_text: str
-    verse_text: str
+    sort_key: tuple[int, ...]
     original: str
     line_number: int
 
@@ -253,49 +249,45 @@ def parse_reference_order_key(reference: str, line_number: int) -> ReferenceOrde
     else:
         return None
 
+    # Order within a chapter: intro (rank 0), then front (rank 1), then verses (rank 2).
     if verse_raw == "intro":
-        verse_rank = 0
-        verse_number = -1
-        verse_text = "intro"
+        sort_key: tuple[int, ...] = (chapter_value, 0, 0, 0, 0)
     elif verse_raw == "front":
-        verse_rank = 1
-        verse_number = -1
-        verse_text = "front"
+        sort_key = (chapter_value, 1, 0, 0, 0)
     else:
-        match = re.match(r"^(\d+)", verse_raw)
-        if not match:
-            return None
-        verse_rank = 2
-        verse_number = int(match.group(1))
-        verse_text = match.group(1)
+        # Verse rows are ordered by first verse ascending. Among rows sharing the
+        # same first verse, the largest range comes first (largest last verse),
+        # then rows that carry extra comma-listed verses come before those that
+        # do not. The last verse is taken from the first "a-b" segment only;
+        # any verses after a comma are ignored when computing the range.
+        first_segment = verse_raw.split(",", 1)[0]
+        has_extra_verses = "," in verse_raw
+        if "-" in first_segment:
+            start_text, end_text = first_segment.split("-", 1)
+            start_match = re.match(r"\d+", start_text)
+            end_match = re.match(r"\d+", end_text)
+            if not start_match:
+                return None
+            first_verse = int(start_match.group(0))
+            last_verse = int(end_match.group(0)) if end_match else first_verse
+        else:
+            start_match = re.match(r"\d+", first_segment)
+            if not start_match:
+                return None
+            first_verse = int(start_match.group(0))
+            last_verse = first_verse
+        extra_rank = 0 if has_extra_verses else 1
+        # Negate last_verse so a larger range sorts first within the same first verse.
+        sort_key = (chapter_value, 2, first_verse, -last_verse, extra_rank)
 
-    return ReferenceOrderKey(
-        chapter_value=chapter_value,
-        verse_rank=verse_rank,
-        verse_number=verse_number,
-        chapter_text=chapter_text,
-        verse_text=verse_text,
-        original=reference,
-        line_number=line_number,
-    )
+    return ReferenceOrderKey(sort_key=sort_key, original=reference, line_number=line_number)
 
 
 def is_reference_in_order(prev_key: ReferenceOrderKey, curr_key: ReferenceOrderKey) -> bool:
-    if curr_key.chapter_value < prev_key.chapter_value:
-        return False
-
-    if curr_key.chapter_value > prev_key.chapter_value:
-        return True
-
-    # Same chapter order: intro -> front -> verses, and verse numbers never decrease.
-    if curr_key.verse_rank < prev_key.verse_rank:
-        return False
-    if curr_key.verse_rank > prev_key.verse_rank:
-        return True
-
-    if curr_key.verse_rank == 2 and curr_key.verse_number < prev_key.verse_number:
-        return False
-    return True
+    # References are in order when their sort keys never decrease. Equal keys
+    # (for example two references that differ only in comma-listed verses) are
+    # allowed in either order.
+    return curr_key.sort_key >= prev_key.sort_key
 
 
 def validate_alternate_translation_label(
