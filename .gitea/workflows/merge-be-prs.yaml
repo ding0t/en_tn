@@ -15,10 +15,10 @@ jobs:
       API: ${{ github.server_url }}/api/v1
       REPO: ${{ github.repository }}
       TOKEN: ${{ secrets.GITEA_TOKEN }}
-      BE_PATTERN: '-be-'  # merge PRs whose base branch contains this (regex .*-be-.*)
+      BE_PATTERN: '-be-'  # merge PRs whose head (source) branch contains this (regex .*-be-.*)
 
     steps:
-      - name: Merge mergeable open PRs targeting -be- branches
+      - name: Merge mergeable open PRs from -be- branches
         id: merge
         run: |
           set -euo pipefail
@@ -49,7 +49,7 @@ jobs:
                   except Exception:
                       return e.code, raw
 
-          # Collect every open PR whose base branch matches the -be- pattern.
+          # Collect every open PR whose head (source) branch matches the -be- pattern.
           be_prs = []
           page = 1
           while True:
@@ -57,18 +57,18 @@ jobs:
               if status != 200 or not isinstance(prs, list) or not prs:
                   break
               for pr in prs:
-                  base_ref = (pr.get('base') or {}).get('ref') or ''
-                  if pattern in base_ref:
+                  head_ref = (pr.get('head') or {}).get('ref') or ''
+                  if pattern in head_ref:
                       be_prs.append(pr)
               if len(prs) < 50:
                   break
               page += 1
 
           if not be_prs:
-              print(f"No open PRs with a base branch matching '{pattern}'; nothing to do.")
+              print(f"No open PRs from a head branch matching '{pattern}'; nothing to do.")
               raise SystemExit(0)
 
-          print(f"Found {len(be_prs)} open PR(s) targeting '{pattern}' branches.")
+          print(f"Found {len(be_prs)} open PR(s) from '{pattern}' branches.")
 
           merged = []
           failed = []
@@ -133,16 +133,16 @@ jobs:
                   if merged:
                       f.write("### Merged\n")
                       for m in merged:
-                          f.write(f"- ✅ {m}\n")
+                          f.write(f"- (merged) {m}\n")
                       f.write("\n")
                   if failed:
                       f.write("### Failed\n")
                       for lbl, reason in failed:
-                          f.write(f"- ❌ {lbl}: {reason}\n")
+                          f.write(f"- (failed) {lbl}: {reason}\n")
 
           if failed:
-              print(f"\n{len(failed)} PR(s) targeting '{pattern}' branches could not be merged.")
+              print(f"\n{len(failed)} PR(s) from '{pattern}' branches could not be merged.")
               raise SystemExit(1)
 
-          print(f"\nAll {len(merged)} open PR(s) targeting '{pattern}' branches merged successfully.")
+          print(f"\nAll {len(merged)} open PR(s) from '{pattern}' branches merged successfully.")
           PYEOF
