@@ -92,8 +92,17 @@ jobs:
                   failed.append((label, "not mergeable"))
                   continue
 
-              # Merge now; merge_when_checks_succeed=False means the API rejects (rather than
-              # queues) if the base branch's protection has not been satisfied.
+              # Validation gate: the head commit's combined CI status must be success,
+              # i.e. the validate-be-branch check passed on the latest commit of the branch.
+              # (This replaces a required status check on master, so non--be- PRs stay ungated.)
+              head_sha = (detail.get('head') or {}).get('sha') or (pr.get('head') or {}).get('sha') or ''
+              _st, combined = api_request('GET', f'/repos/{repo}/commits/{head_sha}/status')
+              state = combined.get('state') if isinstance(combined, dict) else None
+              if state != 'success':
+                  failed.append((label, f"validation status is '{state or 'missing'}', not 'success'"))
+                  continue
+
+              # Merge now (merge_when_checks_succeed=False merges immediately rather than queuing).
               status, result = api_request(
                   'POST', f'/repos/{repo}/pulls/{num}/merge',
                   {'Do': 'merge', 'merge_when_checks_succeed': False},
