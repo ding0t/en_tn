@@ -2,8 +2,8 @@ name: Validate live-snapshot and auto-merge PR
 
 on:
   workflow_dispatch:
-#  schedule:
-#    - cron: '*/5 * * * *' # every 5 minutes
+  schedule:
+    - cron: '0 6 * * *' # every day at 2am Eastern, 6 am UTC
 
 jobs:
   validate-and-merge:
