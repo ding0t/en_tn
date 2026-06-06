@@ -1,6 +1,6 @@
 name: Validate TN -be- Branch PR
 on:
-  workflow_displatch:
+  workflow_dispatch:
   pull_request:
     types:
       - opened
