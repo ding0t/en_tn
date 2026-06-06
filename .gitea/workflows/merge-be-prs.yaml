@@ -79,7 +79,7 @@ jobs:
               head_ref = (pr.get('head') or {}).get('ref') or '?'
               label = f"#{num} ({head_ref} -> {base_ref})"
 
-              # Fetch fresh detail so mergeability reflects the latest check/conflict state.
+              # Fetch fresh detail so mergeability reflects the latest conflict/check state.
               status, detail = api_request('GET', f'/repos/{repo}/pulls/{num}')
               if status != 200 or not isinstance(detail, dict):
                   failed.append((label, f"could not fetch PR detail (status {status})"))
@@ -89,11 +89,11 @@ jobs:
                   failed.append((label, "merge conflicts"))
                   continue
               if detail.get('mergeable') is False:
-                  failed.append((label, "not mergeable (conflicts or failing/pending status checks)"))
+                  failed.append((label, "not mergeable"))
                   continue
 
               # Merge now; merge_when_checks_succeed=False means the API rejects (rather than
-              # queues) if required checks have not passed, which we surface as a failure.
+              # queues) if the base branch's protection has not been satisfied.
               status, result = api_request(
                   'POST', f'/repos/{repo}/pulls/{num}/merge',
                   {'Do': 'merge', 'merge_when_checks_succeed': False},
