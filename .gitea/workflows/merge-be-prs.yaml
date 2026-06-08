@@ -18,6 +18,20 @@ jobs:
       BE_PATTERN: '-be-'  # merge PRs whose head (source) branch contains this (regex .*-be-.*)
 
     steps:
+      - name: Identify the token's account
+        run: |
+          set -euo pipefail
+          code=$(curl -s -o /tmp/who.json -w '%{http_code}' \
+            -H "Authorization: token ${TOKEN}" \
+            "${API}/user")
+          echo "GET /user -> HTTP $code"
+          if [ "$code" != "200" ]; then
+            echo "Token is missing or invalid (expected 200)."
+            exit 1
+          fi
+          # login is not sensitive; the token itself is never printed
+          python3 -c "import json;d=json.load(open('/tmp/who.json'));print('Authenticated as:', d.get('login'))"
+
       - name: Merge mergeable open PRs from -be- branches
         id: merge
         run: |
