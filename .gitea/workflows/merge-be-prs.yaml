@@ -122,7 +122,7 @@ jobs:
                   {'do': 'merge', 'merge_when_checks_succeed': True},
                   expect_json=False,
               )
-              if status in (200, 204):
+              if status in (200, 201, 204):
                   merged.append(label)
                   print(f"Merged {label}")
               else:
