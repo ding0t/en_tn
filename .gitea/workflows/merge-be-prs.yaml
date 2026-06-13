@@ -1,34 +1,47 @@
 name: Merge -be- Branch PRs
 on:
+  # Primary trigger: dispatched by bible-editor's post-export step once all
+  # {BOOK}-be-* branches/PRs for this repo have been pushed.
   workflow_dispatch:
+  # Fallback nightly run. Per the trigger-driven export->merge rollout, remove
+  # this cron once bible-editor's post-export dispatch (VALIDATORS) is enabled
+  # for this repo — workflow_dispatch then becomes the only trigger.
   schedule:
     - cron: '0 6 * * *' # every day at 2am Eastern, 6 am UTC
 
 jobs:
   merge-be-prs:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     permissions:
-      contents: write       # merge the PRs
+      contents: write       # merge the PRs and delete merged head branches
       pull-requests: write  # read PR state and merge
       issues: write         # PR endpoints live under the issues API in Gitea
     env:
       API: ${{ github.server_url }}/api/v1
       REPO: ${{ github.repository }}
       TOKEN: ${{ secrets.GITEA_TOKEN }}
-      BE_PATTERN: '-be-'  # merge PRs whose head (source) branch contains this (regex .*-be-.*)
+      BE_PATTERN: '-be-'    # merge PRs whose head (source) branch contains this
+      BASE_BRANCH: 'master' # only consider PRs targeting this base branch
+      VALIDATION_TIMEOUT_MINUTES: '45' # total budget to wait for in-flight validate-be-branch runs
+      POLL_INTERVAL_SECONDS: '30'
 
     steps:
-      - name: Merge mergeable open PRs from -be- branches
+      - name: Merge mergeable open PRs from -be- branches and delete merged branches
         id: merge
         run: |
           set -euo pipefail
           python3 <<'PYEOF'
-          import json, os, urllib.request, urllib.error
+          import json, os, time, urllib.request, urllib.error
+          from urllib.parse import quote
 
           api = os.environ['API']
           repo = os.environ['REPO']
           token = os.environ['TOKEN']
           pattern = os.environ.get('BE_PATTERN', '-be-')
+          base_branch = os.environ.get('BASE_BRANCH', 'master')
+          timeout_minutes = float(os.environ.get('VALIDATION_TIMEOUT_MINUTES', '45'))
+          poll_interval = float(os.environ.get('POLL_INTERVAL_SECONDS', '30'))
 
           def api_request(method, path, data=None, expect_json=True):
               url = f"{api}{path}"
@@ -49,7 +62,29 @@ jobs:
                   except Exception:
                       return e.code, raw
 
-          # Collect every open PR whose head (source) branch matches the -be- pattern.
+          def branch_path(name):
+              return quote(name, safe='')
+
+          def branch_exists(name):
+              status, _ = api_request('GET', f'/repos/{repo}/branches/{branch_path(name)}')
+              return status == 200
+
+          def git_ref_exists(name):
+              # /git/refs/{ref} matches the ref and anything nested under it,
+              # so confirm an exact match in the response.
+              status, body = api_request('GET', f'/repos/{repo}/git/refs/heads/{branch_path(name)}')
+              if status != 200:
+                  return False
+              refs = body if isinstance(body, list) else [body]
+              return any(isinstance(r, dict) and r.get('ref') == f'refs/heads/{name}' for r in refs)
+
+          def combined_status(sha):
+              status, combined = api_request('GET', f'/repos/{repo}/commits/{sha}/status')
+              if status != 200 or not isinstance(combined, dict):
+                  return ''
+              return combined.get('state') or ''
+
+          # Collect every open PR into base_branch whose head branch matches the -be- pattern.
           be_prs = []
           page = 1
           while True:
@@ -58,70 +93,121 @@ jobs:
                   break
               for pr in prs:
                   head_ref = (pr.get('head') or {}).get('ref') or ''
-                  if pattern in head_ref:
+                  base_ref = (pr.get('base') or {}).get('ref') or ''
+                  if pattern in head_ref and base_ref == base_branch:
                       be_prs.append(pr)
               if len(prs) < 50:
                   break
               page += 1
 
           if not be_prs:
-              print(f"No open PRs from a head branch matching '{pattern}'; nothing to do.")
+              print(f"No open PRs into '{base_branch}' from a head branch matching '{pattern}'; nothing to do.")
               raise SystemExit(0)
 
-          print(f"Found {len(be_prs)} open PR(s) from '{pattern}' branches.")
+          print(f"Found {len(be_prs)} open PR(s) into '{base_branch}' from '{pattern}' branches.")
 
-          merged = []
-          failed = []
+          merged = []   # (label, deletion note)
+          skipped = []  # (label, reason) — expected conditions (validation, conflicts); reported, run still succeeds
+          errors = []   # (label, reason) — infrastructure problems (API failures, failed deletes); fail the run
+
+          # One shared budget for all validation waits: while we wait on one PR's
+          # validation run, the others keep progressing too.
+          deadline = time.monotonic() + timeout_minutes * 60
 
           for pr in be_prs:
               num = pr['number']
-              base_ref = (pr.get('base') or {}).get('ref') or '?'
               head_ref = (pr.get('head') or {}).get('ref') or '?'
-              label = f"#{num} ({head_ref} -> {base_ref})"
+              label = f"#{num} ({head_ref} -> {base_branch})"
 
-              # Fetch fresh detail so mergeability reflects the latest conflict/check state.
               status, detail = api_request('GET', f'/repos/{repo}/pulls/{num}')
               if status != 200 or not isinstance(detail, dict):
-                  failed.append((label, f"could not fetch PR detail (status {status})"))
+                  errors.append((label, f"could not fetch PR detail (status {status})"))
                   continue
 
+              # Validation gate: the head commit's combined CI status must be
+              # success, i.e. validate-be-branch passed on the latest commit of
+              # the branch. When this run is dispatched right after the export
+              # pushes, those validation runs may still be in flight — wait for
+              # a terminal state instead of treating 'pending' as failure.
+              head_sha = (detail.get('head') or {}).get('sha') or ''
+              if not head_sha:
+                  errors.append((label, "could not determine head commit sha"))
+                  continue
+              state = combined_status(head_sha)
+              while state in ('', 'pending') and time.monotonic() < deadline:
+                  print(f"{label}: validation status is '{state or 'missing'}'; waiting {int(poll_interval)}s...")
+                  time.sleep(poll_interval)
+                  state = combined_status(head_sha)
+              if state != 'success':
+                  reason = f"validation status is '{state or 'missing'}', not 'success'"
+                  if state in ('', 'pending'):
+                      reason += f" (timed out after {int(timeout_minutes)} min)"
+                  skipped.append((label, reason))
+                  continue
+
+              # Re-fetch detail after the wait so mergeability reflects the latest state.
+              status, detail = api_request('GET', f'/repos/{repo}/pulls/{num}')
+              if status != 200 or not isinstance(detail, dict):
+                  errors.append((label, f"could not re-fetch PR detail (status {status})"))
+                  continue
               if detail.get('has_merge_conflicts'):
-                  failed.append((label, "merge conflicts"))
+                  skipped.append((label, "merge conflicts"))
                   continue
               if detail.get('mergeable') is False:
-                  failed.append((label, "not mergeable"))
+                  skipped.append((label, "not mergeable"))
                   continue
 
-              # Validation gate: the head commit's combined CI status must be success,
-              # i.e. the validate-be-branch check passed on the latest commit of the branch.
-              # (This replaces a required status check on master, so non--be- PRs stay ungated.)
-              head_sha = (detail.get('head') or {}).get('sha') or (pr.get('head') or {}).get('sha') or ''
-              _st, combined = api_request('GET', f'/repos/{repo}/commits/{head_sha}/status')
-              state = combined.get('state') if isinstance(combined, dict) else None
-              if state != 'success':
-                  failed.append((label, f"validation status is '{state or 'missing'}', not 'success'"))
-                  continue
-
-              # Merge now (merge_when_checks_succeed=False merges immediately rather than queuing).
+              # Merge. Gitea's merge payload is case-inconsistent: 'Do' (the
+              # merge style) is PascalCase while the other options are
+              # snake_case. delete_branch_after_merge is the branch-lifecycle
+              # contract: merged -be- branches must be deleted so the next
+              # export recreates them from current master (Gitea here cannot
+              # re-base an existing branch, so long-lived branches drift into
+              # conflict as master moves).
               status, result = api_request(
                   'POST', f'/repos/{repo}/pulls/{num}/merge',
-                  {'do': 'squash', 'merge_when_checks_succeed': False},
+                  {'Do': 'squash', 'delete_branch_after_merge': True, 'merge_when_checks_succeed': False},
                   expect_json=False,
               )
-              if status in (200, 201, 204):
-                  merged.append(label)
-                  print(f"Merged {label}")
-              else:
-                  failed.append((label, f"merge API status {status}: {result}"))
+              if status not in (200, 201, 204):
+                  errors.append((label, f"merge API status {status}: {result}"))
                   print(f"Failed to merge {label}: status {status}: {result}")
+                  continue
+              print(f"Merged {label}")
+
+              # Verify the head branch is cleanly gone: both the branch API and
+              # the underlying git ref must 404. A surviving git ref with no
+              # branch is a dangling ref, which blocks that book's future exports.
+              time.sleep(2)
+              deletion = "branch deleted"
+              if branch_exists(head_ref):
+                  print(f"{label}: branch survived delete_branch_after_merge; deleting explicitly...")
+                  api_request('DELETE', f'/repos/{repo}/branches/{branch_path(head_ref)}', expect_json=False)
+                  time.sleep(2)
+              if branch_exists(head_ref):
+                  deletion = "MERGED, but branch could not be deleted"
+                  errors.append((label, "branch could not be deleted after merge — it will drift; delete it manually"))
+              elif git_ref_exists(head_ref):
+                  print(f"{label}: DANGLING REF detected (branch gone, git ref remains); deleting ref...")
+                  api_request('DELETE', f'/repos/{repo}/git/refs/heads/{branch_path(head_ref)}', expect_json=False)
+                  if git_ref_exists(head_ref):
+                      deletion = "MERGED, but a dangling git ref remains"
+                      errors.append((label, "dangling git ref remains after merge — clear it manually or the export skips this book"))
+                  else:
+                      deletion = "branch deleted (dangling ref cleared via git refs API)"
+              merged.append((label, deletion))
+              print(f"{label}: {deletion}")
 
           print("")
           print("===== -be- PR auto-merge report =====")
           print(f"Merged ({len(merged)}):")
-          for m in merged:
-              print(f"  - {m}")
-          print(f"Failed ({len(failed)}):")
-          for lbl, reason in failed:
+          for lbl, note in merged:
+              print(f"  - {lbl}: {note}")
+          print(f"Skipped ({len(skipped)}):")
+          for lbl, reason in skipped:
+              print(f"  - {lbl}: {reason}")
+          print(f"Errors ({len(errors)}):")
+          for lbl, reason in errors:
               print(f"  - {lbl}: {reason}")
 
           # Expose results as step outputs.
@@ -129,29 +215,41 @@ jobs:
           if gh_out:
               with open(gh_out, 'a', encoding='utf-8') as f:
                   f.write(f"merged_count={len(merged)}\n")
-                  f.write(f"failed_count={len(failed)}\n")
-                  f.write("merged_prs=" + ", ".join(merged) + "\n")
-                  f.write("failed_prs=" + ", ".join(lbl for lbl, _ in failed) + "\n")
+                  f.write(f"skipped_count={len(skipped)}\n")
+                  f.write(f"error_count={len(errors)}\n")
+                  f.write("merged_prs=" + ", ".join(lbl for lbl, _ in merged) + "\n")
+                  f.write("skipped_prs=" + ", ".join(lbl for lbl, _ in skipped) + "\n")
+                  f.write("error_prs=" + ", ".join(lbl for lbl, _ in errors) + "\n")
 
           # Render a summary on the workflow run page.
           summary = os.environ.get('GITHUB_STEP_SUMMARY')
           if summary:
               with open(summary, 'a', encoding='utf-8') as f:
                   f.write("## -be- PR auto-merge\n\n")
-                  f.write(f"**Merged:** {len(merged)} | **Failed:** {len(failed)}\n\n")
+                  f.write(f"**Merged:** {len(merged)} | **Skipped:** {len(skipped)} | **Errors:** {len(errors)}\n\n")
                   if merged:
                       f.write("### Merged\n")
-                      for m in merged:
-                          f.write(f"- (merged) {m}\n")
+                      for lbl, note in merged:
+                          f.write(f"- (merged) {lbl}: {note}\n")
                       f.write("\n")
-                  if failed:
-                      f.write("### Failed\n")
-                      for lbl, reason in failed:
-                          f.write(f"- (failed) {lbl}: {reason}\n")
+                  if skipped:
+                      f.write("### Skipped\n")
+                      for lbl, reason in skipped:
+                          f.write(f"- (skipped) {lbl}: {reason}\n")
+                      f.write("\n")
+                  if errors:
+                      f.write("### Errors\n")
+                      for lbl, reason in errors:
+                          f.write(f"- (error) {lbl}: {reason}\n")
 
-          if failed:
-              print(f"\n{len(failed)} PR(s) from '{pattern}' branches could not be merged.")
+          # Skipped PRs (failed validation, conflicts) are expected and reported,
+          # not fatal — failing the run would block bible-editor's post-merge
+          # reimport for the books that DID merge. Only infrastructure errors
+          # (API failures, merges that error, deletions that leave refs behind)
+          # fail the run.
+          if errors:
+              print(f"\n{len(errors)} error(s) need attention.")
               raise SystemExit(1)
 
-          print(f"\nAll {len(merged)} open PR(s) from '{pattern}' branches merged successfully.")
+          print(f"\nDone: {len(merged)} PR(s) merged, {len(skipped)} skipped.")
           PYEOF
