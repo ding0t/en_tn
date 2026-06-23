@@ -290,7 +290,7 @@ dublin_core:
     - Rick Keaton
     - Robby Little
     - Robert W Johnson
-    - 'Robert Hunt, Freely-Given.org'
+    - Robert Hunt, Freely-Given.org
     - Rochelle Hook
     - Rodney White
     - Rolaine Franz
@@ -373,12 +373,12 @@ dublin_core:
     translation decisions.
   format: text/tsv
   identifier: tn
-  issued: '2025-11-20'
+  issued: '2026-06-24'
   language:
     direction: ltr
     identifier: en
     title: English
-  modified: '2025-11-20'
+  modified: '2026-06-24'
   publisher: unfoldingWord
   relation:
     - en/ult
@@ -392,11 +392,11 @@ dublin_core:
   source:
     - identifier: tn
       language: en
-      version: '87'
+      version: '88'
   subject: TSV Translation Notes
   title: unfoldingWord® Translation Notes
   type: help
-  version: '88'
+  version: '89'
 checking:
   checking_entity:
     - unfoldingWord
@@ -426,7 +426,7 @@ projects:
   - title: Deuteronomy
     versification: ufw
     identifier: deu
-    sort: 5 
+    sort: 5
     path: ./tn_DEU.tsv
     categories:
       - bible-ot
@@ -507,6 +507,13 @@ projects:
     path: ./tn_JOB.tsv
     categories:
       - bible-ot
+  - title: Psalms
+    versification: ufw
+    identifier: psa
+    sort: 19
+    path: ./tn_PSA.tsv
+    categories:
+      - bible-ot
   - title: Proverbs
     versification: ufw
     identifier: pro
@@ -519,6 +526,13 @@ projects:
     identifier: sng
     sort: 22
     path: ./tn_SNG.tsv
+    categories:
+      - bible-ot
+  - title: Lamentations
+    versification: ufw
+    identifier: lam
+    sort: 25
+    path: ./tn_LAM.tsv
     categories:
       - bible-ot
   - title: Joel
@@ -547,6 +561,13 @@ projects:
     identifier: nam
     sort: 34
     path: ./tn_NAM.tsv
+    categories:
+      - bible-ot
+  - title: Habakkuk
+    versification: ufw
+    identifier: hab
+    sort: 35
+    path: ./tn_HAB.tsv
     categories:
       - bible-ot
   - title: Zephaniah
