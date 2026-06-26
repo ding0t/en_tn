@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-06-26T08:37:53.360Z",
+    "dateCreated": "2026-06-26T08:39:18.093Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -25,7 +25,7 @@
       "uWBurritos": {
         "TN": {
           "revision": "1",
-          "timestamp": "2026-06-26T08:37:53.360Z"
+          "timestamp": "2026-06-26T08:39:18.093Z"
         }
       }
     },
@@ -1036,10 +1036,10 @@
     },
     "ingredients/AMO.tsv": {
       "checksum": {
-        "md5": "2bab9b8b829998cb5c170cf72e67e334"
+        "md5": "662f0584220ad98b43b1c35d98bff51d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 95920,
+      "size": 95945,
       "scope": {
         "AMO": []
       }
@@ -1196,10 +1196,10 @@
     },
     "ingredients/ISA.tsv": {
       "checksum": {
-        "md5": "2fbd39286bbe7ec5447b87ba133145ec"
+        "md5": "e680061bcfcbf60b7e6fed54e9fc16bb"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1635227,
+      "size": 1636098,
       "scope": {
         "ISA": []
       }
