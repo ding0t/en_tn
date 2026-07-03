@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-07-03T15:45:54.061Z",
+    "dateCreated": "2026-07-03T15:46:36.394Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -25,7 +25,7 @@
       "uWBurritos": {
         "TN": {
           "revision": "1",
-          "timestamp": "2026-07-03T15:45:54.061Z"
+          "timestamp": "2026-07-03T15:46:36.394Z"
         }
       }
     },
@@ -1196,10 +1196,10 @@
     },
     "ingredients/ISA.tsv": {
       "checksum": {
-        "md5": "a46590a8d07f4183a97b70d183b383aa"
+        "md5": "730efbb430d83d00c07f6b414a0af86d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1857351,
+      "size": 1859370,
       "scope": {
         "ISA": []
       }
