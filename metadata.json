@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-07-06T22:41:22.840Z",
+    "dateCreated": "2026-07-06T23:25:51.901Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -25,7 +25,7 @@
       "uWBurritos": {
         "TN": {
           "revision": "1",
-          "timestamp": "2026-07-06T22:41:22.840Z"
+          "timestamp": "2026-07-06T23:25:51.901Z"
         }
       }
     },
@@ -1393,10 +1393,10 @@
     },
     "ingredients/NUM.tsv": {
       "checksum": {
-        "md5": "cbfeaa93ab879d97335fe949201b7fa0"
+        "md5": "7e3b88bc13fb5d2e49679f60fcbe6490"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1294024,
+      "size": 1311605,
       "scope": {
         "NUM": []
       }
