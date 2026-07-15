@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-07-15T13:24:08.132Z",
+    "dateCreated": "2026-07-15T17:57:23.876Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -25,7 +25,7 @@
       "uWBurritos": {
         "TN": {
           "revision": "1",
-          "timestamp": "2026-07-15T13:24:08.132Z"
+          "timestamp": "2026-07-15T17:57:23.876Z"
         }
       }
     },
@@ -1503,10 +1503,10 @@
     },
     "ingredients/ZEC.tsv": {
       "checksum": {
-        "md5": "0367102aa44a026c252b53ccc5b061ad"
+        "md5": "91c9907b8043ee389b03b06479676f1a"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 284961,
+      "size": 298462,
       "scope": {
         "ZEC": []
       }
