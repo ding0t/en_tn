@@ -5,27 +5,27 @@
     "category": "source",
     "generator": {
       "softwareName": "go-rc2sb",
-      "softwareVersion": "0.0.1",
+      "softwareVersion": "v0.4.0",
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-07-17T08:36:09.586Z",
+    "dateCreated": "2026-07-17T21:46:49.465Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
-    "uWBurritos": {
-      "id": "https://git.door43.org/uW",
+    "dcs": {
+      "id": "https://git.door43.org",
       "name": {
-        "en": "Door43 uW Burritos"
+        "en": "Door43 Content Service"
       }
     }
   },
   "identification": {
     "primary": {
-      "uWBurritos": {
-        "TN": {
-          "revision": "1",
-          "timestamp": "2026-07-17T08:36:09.586Z"
+      "dcs": {
+        "unfoldingWord/en_tn": {
+          "revision": "0fefd8d51558976da80d5660be72f93a699559cc",
+          "timestamp": "2026-07-17T21:46:49.465Z"
         }
       }
     },
