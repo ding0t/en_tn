@@ -21,4 +21,11 @@ jobs:
 
       - name: TN File Validation Results <==== Click Here
         run: |
-          python .gitea/workflows/validate_tn_files.py
+          REF_NAME="${GITHUB_REF_NAME:-${GITHUB_REF##refs/heads/}}"
+          BOOK="$(printf '%s' "${REF_NAME}" | sed 's/-be.*//' | tr '[:upper:]' '[:lower:]')"
+          echo "Validating book '${BOOK}' from branch '${REF_NAME}'"
+          if [ -n "${BOOK}" ]; then
+            python .gitea/workflows/validate_tn_files.py --book "${BOOK}"
+          else
+            python .gitea/workflows/validate_tn_files.py
+          fi
