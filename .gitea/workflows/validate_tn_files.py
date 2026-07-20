@@ -50,6 +50,7 @@ CHECK_ALT_TRANSLATION_LABEL = "12. Alternate translation Label Check"
 CHECK_PAIRED_SQUARE_BRACKET = "13. Paired Square Bracket Check"
 CHECK_DUPLICATE_ID = "14. Duplicate ID Check"
 CHECK_STRAIGHT_QUOTES = "15. Straight Quotes Check"
+CHECK_NOTE = "16. Note Check"
 CHECK_NUMBER_TO_NAME = {
     1: CHECK_VALID_MANIFEST,
     2: CHECK_PROJECT_TSV_FILES_EXIST,
@@ -66,6 +67,7 @@ CHECK_NUMBER_TO_NAME = {
     13: CHECK_PAIRED_SQUARE_BRACKET,
     14: CHECK_DUPLICATE_ID,
     15: CHECK_STRAIGHT_QUOTES,
+    16: CHECK_NOTE,
 }
 CHECK_DISPLAY_ORDER = [CHECK_NUMBER_TO_NAME[i] for i in sorted(CHECK_NUMBER_TO_NAME.keys())]
 
@@ -680,6 +682,13 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
                 ),
             )
 
+        if not note.strip():
+            errors.add(
+                rule=CHECK_NOTE,
+                **row_context,
+                message="Note column cannot be blank.",
+            )
+
         if note.endswith("\\n"):
             errors.add(
                 rule=CHECK_NOTE_ENDING,
@@ -1016,6 +1025,7 @@ def main() -> int:
             CHECK_PAIRED_SQUARE_BRACKET,
             CHECK_DUPLICATE_ID,
             CHECK_STRAIGHT_QUOTES,
+            CHECK_NOTE,
         ]
     )
     if need_tsv_content_checks:
