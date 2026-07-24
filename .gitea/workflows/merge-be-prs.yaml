@@ -1,13 +1,10 @@
 name: Merge -be- Branch PRs
 on:
-  # Primary trigger: dispatched by bible-editor's post-export step once all
-  # {BOOK}-be-* branches/PRs for this repo have been pushed.
+  # Dispatch-only safety net. The primary path is per-PR:
+  # validate-be-branch (pull_request) -> merge-be-pr (workflow_run)
+  # merges each PR as it passes. Dispatch this to batch-merge any open
+  # -be- PR the per-PR path missed (e.g. a dropped validation event).
   workflow_dispatch:
-  # Fallback nightly run. Per the trigger-driven export->merge rollout, remove
-  # this cron once bible-editor's post-export dispatch (VALIDATORS) is enabled
-  # for this repo — workflow_dispatch then becomes the only trigger.
-  schedule:
-    - cron: '0 6 * * *' # every day at 2am Eastern, 6 am UTC
 
 jobs:
   merge-be-prs:
