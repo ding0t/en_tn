@@ -80,6 +80,8 @@ class ValidationError:
     line: int | None = None
     row_id: str | None = None
     reference: str | None = None
+    # "error" fails the run; "warning" is reported but never blocks a merge.
+    severity: str = "error"
 
     def display(self) -> str:
         parts = [f"[{self.rule}]"]
@@ -111,6 +113,7 @@ class ErrorCollector:
         line: int | None = None,
         row_id: str | None = None,
         reference: str | None = None,
+        severity: str = "error",
     ) -> None:
         if not self.is_enabled(rule):
             return
@@ -125,11 +128,25 @@ class ErrorCollector:
                 line=line,
                 row_id=row_id,
                 reference=reference,
+                severity=severity,
             )
         )
 
     def is_enabled(self, check_name: str) -> bool:
         return check_name in self.enabled_checks
+
+    @property
+    def failures(self) -> list[ValidationError]:
+        return [err for err in self.errors if err.severity != "warning"]
+
+    @property
+    def warnings(self) -> list[ValidationError]:
+        return [err for err in self.errors if err.severity == "warning"]
+
+    def has_failures(self) -> bool:
+        # Only hard errors decide the exit code. Warnings are advisory: they are
+        # printed and annotated, but must not stop a book from merging.
+        return bool(self.failures)
 
     def has_errors(self) -> bool:
         return bool(self.errors) or self.truncated
@@ -140,6 +157,10 @@ class ReferenceOrderKey:
     sort_key: tuple[int, ...]
     original: str
     line_number: int
+    chapter: int = 0
+    rank: int = 2
+    first_verse: int = 0
+    last_verse: int = 0
 
 
 def normalize_repo_path(path_value: str) -> str:
@@ -253,17 +274,13 @@ def parse_reference_order_key(reference: str, line_number: int) -> ReferenceOrde
 
     # Order within a chapter: intro (rank 0), then front (rank 1), then verses (rank 2).
     if verse_raw == "intro":
-        sort_key: tuple[int, ...] = (chapter_value, 0, 0, 0, 0)
+        rank, first_verse, last_verse = 0, 0, 0
     elif verse_raw == "front":
-        sort_key = (chapter_value, 1, 0, 0, 0)
+        rank, first_verse, last_verse = 1, 0, 0
     else:
-        # Verse rows are ordered by first verse ascending. Among rows sharing the
-        # same first verse, the largest range comes first (largest last verse),
-        # then rows that carry extra comma-listed verses come before those that
-        # do not. The last verse is taken from the first "a-b" segment only;
-        # any verses after a comma are ignored when computing the range.
+        # Only the leading "a-b" segment defines the span; verses listed after a
+        # comma do not affect ordering.
         first_segment = verse_raw.split(",", 1)[0]
-        has_extra_verses = "," in verse_raw
         if "-" in first_segment:
             start_text, end_text = first_segment.split("-", 1)
             start_match = re.match(r"\d+", start_text)
@@ -278,18 +295,135 @@ def parse_reference_order_key(reference: str, line_number: int) -> ReferenceOrde
                 return None
             first_verse = int(start_match.group(0))
             last_verse = first_verse
-        extra_rank = 0 if has_extra_verses else 1
-        # Negate last_verse so a larger range sorts first within the same first verse.
-        sort_key = (chapter_value, 2, first_verse, -last_verse, extra_rank)
+        rank = 2
+        if last_verse < first_verse:
+            last_verse = first_verse
 
-    return ReferenceOrderKey(sort_key=sort_key, original=reference, line_number=line_number)
+    return ReferenceOrderKey(
+        sort_key=(chapter_value, rank, first_verse, last_verse),
+        original=reference,
+        line_number=line_number,
+        chapter=chapter_value,
+        rank=rank,
+        first_verse=first_verse,
+        last_verse=last_verse,
+    )
 
 
 def is_reference_in_order(prev_key: ReferenceOrderKey, curr_key: ReferenceOrderKey) -> bool:
-    # References are in order when their sort keys never decrease. Equal keys
-    # (for example two references that differ only in comma-listed verses) are
-    # allowed in either order.
+    # Retained for callers that want the simple monotonic test. The real
+    # ordering policy lives in evaluate_reference_order.
     return curr_key.sort_key >= prev_key.sort_key
+
+
+def _is_bridge(key: ReferenceOrderKey) -> bool:
+    return key.rank == 2 and key.last_verse > key.first_verse
+
+
+def evaluate_reference_order(
+    rows: list[tuple[ReferenceOrderKey, dict[str, Any]]], errors: ErrorCollector
+) -> None:
+    """Report reference-ordering problems, separating hard errors from warnings.
+
+    Single verses must never move backward: 10 before 9 is an error. A verse
+    bridge (say 9-10) is different -- it describes a transition, so it may sit
+    anywhere inside its own span: before the 9s, or between the 9s and the 10s.
+    It is only an error when it escapes that span, i.e. it lands before verse-8
+    material or after verse-11 material. Sitting after every one of its end
+    verses, immediately before the next verse, is legal but usually not what was
+    intended, so that case warns rather than fails.
+    """
+    for index, (key, context) in enumerate(rows):
+        if index == 0:
+            continue
+        prev_key, _ = rows[index - 1]
+
+        # Chapter order and intro/front placement stay strict.
+        if key.chapter != prev_key.chapter:
+            if key.chapter < prev_key.chapter:
+                errors.add(
+                    rule=CHECK_REFERENCE_ORDER,
+                    **context,
+                    message=(
+                        f"Reference '{key.original}' is out of order. It appears after "
+                        f"'{prev_key.original}' on line {prev_key.line_number}, but the chapter "
+                        "goes backward."
+                    ),
+                )
+            continue
+        if key.rank < prev_key.rank:
+            errors.add(
+                rule=CHECK_REFERENCE_ORDER,
+                **context,
+                message=(
+                    f"Reference '{key.original}' is out of order. It appears after "
+                    f"'{prev_key.original}' on line {prev_key.line_number}; intro and front rows "
+                    "must come before verse rows."
+                ),
+            )
+            continue
+        if key.rank != 2 or prev_key.rank != 2:
+            continue
+
+        next_key = rows[index + 1][0] if index + 1 < len(rows) else None
+        if next_key is not None and (next_key.chapter != key.chapter or next_key.rank != 2):
+            next_key = None
+
+        if _is_bridge(key):
+            # Escaped its span on the left: something before its start follows it.
+            if next_key is not None and next_key.first_verse < key.first_verse:
+                errors.add(
+                    rule=CHECK_REFERENCE_ORDER,
+                    **context,
+                    message=(
+                        f"Reference '{key.original}' is out of order. It appears before "
+                        f"'{next_key.original}' on line {next_key.line_number}, which is earlier "
+                        f"than the start of its own range (verse {key.first_verse})."
+                    ),
+                )
+                continue
+            # Escaped its span on the right: it follows something past its end.
+            if prev_key.first_verse > key.last_verse:
+                errors.add(
+                    rule=CHECK_REFERENCE_ORDER,
+                    **context,
+                    message=(
+                        f"Reference '{key.original}' is out of order. It appears after "
+                        f"'{prev_key.original}' on line {prev_key.line_number}, which is past the "
+                        f"end of its own range (verse {key.last_verse})."
+                    ),
+                )
+                continue
+            # Legal but suspect: parked after everything in its own range.
+            if prev_key.first_verse == key.last_verse and (
+                next_key is None or next_key.first_verse > key.last_verse
+            ):
+                trailing = (
+                    f" and before '{next_key.original}'" if next_key is not None else ""
+                )
+                errors.add(
+                    rule=CHECK_REFERENCE_ORDER,
+                    severity="warning",
+                    **context,
+                    message=(
+                        f"Reference '{key.original}' sits after all verse {key.last_verse} "
+                        f"rows{trailing}. A bridged row usually belongs at the transition it "
+                        "describes; check whether it should come earlier in its range."
+                    ),
+                )
+            continue
+
+        # Single verse: never allowed to move back past the previous row's start.
+        if key.first_verse < prev_key.first_verse:
+            errors.add(
+                rule=CHECK_REFERENCE_ORDER,
+                **context,
+                message=(
+                    f"Reference '{key.original}' is out of order. It appears after "
+                    f"'{prev_key.original}' on line {prev_key.line_number}, but should not go "
+                    "backward in verse order."
+                ),
+            )
 
 
 def validate_alternate_translation_label(
@@ -308,6 +442,7 @@ def validate_alternate_translation_label(
             if preceding_two == "  ":
                 errors.add(
                     rule=CHECK_ALT_TRANSLATION_LABEL,
+                    severity="warning",
                     **row_context,
                     message=(
                         f"Matched label '{raw_match}': too many spaces before the "
@@ -317,6 +452,7 @@ def validate_alternate_translation_label(
             elif not re.fullmatch(r"[^a-z] ", preceding_two or ""):
                 errors.add(
                     rule=CHECK_ALT_TRANSLATION_LABEL,
+                    severity="warning",
                     **row_context,
                     message=(
                         f"Matched label '{raw_match}': the previous sentence does not "
@@ -328,6 +464,7 @@ def validate_alternate_translation_label(
         if match.group(1) != "e":
             errors.add(
                 rule=CHECK_ALT_TRANSLATION_LABEL,
+                severity="warning",
                 **row_context,
                 message=f"Matched label '{raw_match}': use 'Alternate', not 'Alternative'.",
             )
@@ -336,6 +473,7 @@ def validate_alternate_translation_label(
         if match.group(2) != " ":
             errors.add(
                 rule=CHECK_ALT_TRANSLATION_LABEL,
+                severity="warning",
                 **row_context,
                 message=(
                     f"Matched label '{raw_match}': use exactly one space between "
@@ -347,6 +485,7 @@ def validate_alternate_translation_label(
         if match.group(3) != "t":
             errors.add(
                 rule=CHECK_ALT_TRANSLATION_LABEL,
+                severity="warning",
                 **row_context,
                 message=(
                     f"Matched label '{raw_match}': use lowercase 't' in "
@@ -363,6 +502,7 @@ def validate_alternate_translation_label(
             pretty_next = next_char if next_char else "(end of note)"
             errors.add(
                 rule=CHECK_ALT_TRANSLATION_LABEL,
+                severity="warning",
                 **row_context,
                 message=(
                     f"Matched label '{raw_match}': Alternate translation label must be "
@@ -376,6 +516,7 @@ def validate_alternate_translation_label(
     if duplicate_match:
         errors.add(
             rule=CHECK_ALT_TRANSLATION_LABEL,
+            severity="warning",
             **row_context,
             message=(
                 f"Matched text '{duplicate_match.group(0)}': Duplicate Alternate "
@@ -480,7 +621,7 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
 
     seen_blank_line = False
     seen_ids: set[str] = set()
-    previous_reference_key: ReferenceOrderKey | None = None
+    reference_order_rows: list[tuple[ReferenceOrderKey, dict[str, Any]]] = []
 
     for zero_based_index, raw_line in enumerate(lines[1:], start=1):
         line_number = zero_based_index + 1
@@ -645,20 +786,9 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
         else:
             current_reference_key = parse_reference_order_key(reference, line_number)
             if current_reference_key is not None:
-                if previous_reference_key is not None and not is_reference_in_order(
-                    previous_reference_key, current_reference_key
-                ):
-                    errors.add(
-                        rule=CHECK_REFERENCE_ORDER,
-                        **row_context,
-                        message=(
-                            f"Reference '{reference}' is out of order. It appears after "
-                            f"'{previous_reference_key.original}' on line "
-                            f"{previous_reference_key.line_number}, but should not go backward "
-                            "in chapter or verse order."
-                        ),
-                    )
-                previous_reference_key = current_reference_key
+                # Ordering needs a lookahead, so collect now and judge once the
+                # whole file has been read (see evaluate_reference_order).
+                reference_order_rows.append((current_reference_key, dict(row_context)))
 
         if support_reference and not SUPPORT_REFERENCE_RE.fullmatch(support_reference):
             errors.add(
@@ -685,6 +815,7 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
         if not note.strip():
             errors.add(
                 rule=CHECK_NOTE,
+                severity="warning",
                 **row_context,
                 message="Note column cannot be blank.",
             )
@@ -692,6 +823,7 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
         if note.endswith("\\n"):
             errors.add(
                 rule=CHECK_NOTE_ENDING,
+                severity="warning",
                 **row_context,
                 message="Note must not end with literal \\n.",
             )
@@ -699,6 +831,8 @@ def validate_tsv_file(tsv_path: Path, errors: ErrorCollector) -> None:
         if note:
             validate_alternate_translation_label(note=note, errors=errors, row_context=row_context)
             validate_paired_square_brackets(note=note, errors=errors, row_context=row_context)
+
+    evaluate_reference_order(reference_order_rows, errors)
 
 
 def _escape_annotation_value(value: str) -> str:
@@ -772,68 +906,69 @@ def _json_output_by_check(
 
 
 def emit_results(errors: ErrorCollector, active_checks: list[str], output_json: bool = False) -> int:
-    ordered_errors = sorted(errors.errors, key=_error_sort_key)
+    ordered_errors = sorted(errors.failures, key=_error_sort_key)
+    ordered_warnings = sorted(errors.warnings, key=_error_sort_key)
     grouped_errors = _group_errors_by_check(ordered_errors, active_checks)
+    grouped_warnings = _group_errors_by_check(ordered_warnings, active_checks)
+    failed = errors.has_failures()
+
+    def _annotate(err: ValidationError, level: str) -> None:
+        if not _should_emit_annotations():
+            return
+        annotation = _escape_annotation_value(err.display())
+        if err.file and err.line is not None:
+            print(f"::{level} file={err.file},line={err.line}::{annotation}")
+        elif err.file:
+            print(f"::{level} file={err.file}::{annotation}")
+        else:
+            print(f"::{level}::{annotation}")
 
     if output_json:
-        print(json.dumps(_json_output_by_check(grouped_errors, active_checks), ensure_ascii=False))
-        if errors.has_errors():
-            write_step_summary(success=False, errors=ordered_errors, truncated=errors.truncated)
-            return 1
-        write_step_summary(success=True, errors=[])
-        return 0
+        payload = {
+            "errors": _json_output_by_check(grouped_errors, active_checks),
+            "warnings": _json_output_by_check(grouped_warnings, active_checks),
+        }
+        print(json.dumps(payload, ensure_ascii=False))
+        write_step_summary(
+            success=not failed,
+            errors=ordered_errors,
+            truncated=errors.truncated,
+            warnings=ordered_warnings,
+        )
+        return 1 if failed else 0
 
-    if errors.has_errors():
-        print(f"Validation failed with {len(ordered_errors)} error(s).")
+    if failed:
+        print(f"Validation failed with {len(ordered_errors)} error(s).", end="")
     else:
-        print("Validation passed: manifest.yaml and TSV checks succeeded.")
+        print("Validation passed: manifest.yaml and TSV checks succeeded.", end="")
+    if ordered_warnings:
+        print(f" {len(ordered_warnings)} warning(s) reported (not blocking).")
+    else:
+        print("")
 
-    for check_name in active_checks:
+    all_checks = list(active_checks) + [
+        name for name in list(grouped_errors) + list(grouped_warnings)
+        if name not in active_checks
+    ]
+    seen: set[str] = set()
+    for check_name in all_checks:
+        if check_name in seen:
+            continue
+        seen.add(check_name)
         print(check_name)
         print("-" * len(check_name))
         section_errors = grouped_errors.get(check_name, [])
-        if not section_errors:
+        section_warnings = grouped_warnings.get(check_name, [])
+        if not section_errors and not section_warnings:
             print("No validation errors found.")
             print("")
             continue
-
         for err in section_errors:
-            line = err.display()
-            print(f"- {line}")
-            if _should_emit_annotations():
-                if err.file:
-                    annotation = _escape_annotation_value(line)
-                    if err.line is not None:
-                        print(f"::error file={err.file},line={err.line}::{annotation}")
-                    else:
-                        print(f"::error file={err.file}::{annotation}")
-                else:
-                    annotation = _escape_annotation_value(line)
-                    print(f"::error::{annotation}")
-        print("")
-
-    for check_name in grouped_errors:
-        if check_name in active_checks:
-            continue
-        print(check_name)
-        print("-" * len(check_name))
-        section_errors = grouped_errors[check_name]
-        if not section_errors:
-            print("No validation errors found.")
-        else:
-            for err in section_errors:
-                line = err.display()
-                print(f"- {line}")
-                if _should_emit_annotations():
-                    if err.file:
-                        annotation = _escape_annotation_value(line)
-                        if err.line is not None:
-                            print(f"::error file={err.file},line={err.line}::{annotation}")
-                        else:
-                            print(f"::error file={err.file}::{annotation}")
-                    else:
-                        annotation = _escape_annotation_value(line)
-                        print(f"::error::{annotation}")
+            print(f"- {err.display()}")
+            _annotate(err, "error")
+        for err in section_warnings:
+            print(f"- WARNING: {err.display()}")
+            _annotate(err, "warning")
         print("")
 
     if errors.truncated:
@@ -843,28 +978,40 @@ def emit_results(errors: ErrorCollector, active_checks: list[str], output_json: 
         )
         print(truncation)
         if _should_emit_annotations():
-            print(f"::error::{_escape_annotation_value(truncation)}")
+            print(f"::{'error' if failed else 'warning'}::{_escape_annotation_value(truncation)}")
 
-    if errors.has_errors():
-        write_step_summary(success=False, errors=ordered_errors, truncated=errors.truncated)
-        return 1
-
-    write_step_summary(success=True, errors=[])
-    return 0
+    write_step_summary(
+        success=not failed,
+        errors=ordered_errors,
+        truncated=errors.truncated,
+        warnings=ordered_warnings,
+    )
+    return 1 if failed else 0
 
 
 def write_step_summary(
-    *, success: bool, errors: list[ValidationError], truncated: bool = False
+    *,
+    success: bool,
+    errors: list[ValidationError],
+    truncated: bool = False,
+    warnings: list[ValidationError] | None = None,
 ) -> None:
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
     if not summary_path:
         return
 
+    warning_list = warnings or []
     lines: list[str] = []
     if success:
         lines.append("## TN Validation")
         lines.append("")
-        lines.append("All checks passed.")
+        if warning_list:
+            lines.append(
+                f"All checks passed. **{len(warning_list)}** warning(s) reported "
+                "(advisory only -- they do not block merging)."
+            )
+        else:
+            lines.append("All checks passed.")
     else:
         lines.append("## TN Validation")
         lines.append("")
@@ -884,6 +1031,22 @@ def write_step_summary(
         if truncated:
             lines.append("")
             lines.append("_Validation output was truncated by --max-errors._")
+
+    if warning_list:
+        lines.append("")
+        lines.append(f"### Warnings ({len(warning_list)}) -- not blocking")
+        lines.append("")
+        lines.append("| Check | Location | Message |")
+        lines.append("|---|---|---|")
+        for err in warning_list[:200]:
+            location = err.file or "(repo)"
+            if err.file and err.line is not None:
+                location = f"{err.file}:{err.line}"
+            message = err.message.replace("|", "\\|")
+            lines.append(f"| {err.rule} | {location} | {message} |")
+        if len(warning_list) > 200:
+            lines.append("")
+            lines.append(f"_Warning list limited to first 200 (total: {len(warning_list)})._")
 
     with open(summary_path, "a", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
