@@ -1,0 +1,186 @@
+name: Merge -be- PR on validation success
+on:
+  workflow_run:
+    workflows: ["Validate TN -be- Branch"]
+    types: [completed]
+
+# De-dupe per validated commit, NOT per repo: Gitea emits duplicate validate
+# runs for the same sha, and a repo-wide group made the second merge run cancel
+# the first. Keyed by sha, duplicates collapse while different books still merge
+# independently (the step retries the transient 405s that concurrency can cause).
+concurrency:
+  group: be-merge-${{ github.repository }}-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  merge-be-pr:
+    # Only gate on conclusion here. Do NOT test head_branch: for a
+    # pull_request-triggered run Gitea reports it as "#712" (or omits it), so a
+    # contains(...,'-be-') test here is always false and silently skips the job.
+    # The -be- check lives in the step, against the resolved PR's real head ref.
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write       # merge the PR and delete the merged head branch
+      pull-requests: write  # read PR state and merge
+      issues: write         # PR endpoints live under the issues API in Gitea
+    env:
+      API: ${{ github.server_url }}/api/v1
+      REPO: ${{ github.repository }}
+      TOKEN: ${{ secrets.GITEA_TOKEN }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+      BASE_BRANCH: 'master'
+      BE_PATTERN: '-be-'
+    steps:
+      - name: Merge the validated -be- PR and delete its branch
+        run: |
+          set -euo pipefail
+          python3 <<'PYEOF'
+          import json, os, time, urllib.request, urllib.error
+          from urllib.parse import quote
+
+          api = os.environ['API']
+          repo = os.environ['REPO']
+          token = os.environ['TOKEN']
+          head_sha = os.environ['HEAD_SHA']
+          base_branch = os.environ.get('BASE_BRANCH', 'master')
+          pattern = os.environ.get('BE_PATTERN', '-be-')
+
+          def api_request(method, path, data=None, expect_json=True):
+              url = f"{api}{path}"
+              req_data = json.dumps(data).encode() if data is not None else None
+              req = urllib.request.Request(url, data=req_data, method=method)
+              req.add_header('Authorization', f'token {token}')
+              req.add_header('Content-Type', 'application/json')
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      raw = resp.read().decode()
+                      if expect_json and raw:
+                          return resp.status, json.loads(raw)
+                      return resp.status, raw
+              except urllib.error.HTTPError as e:
+                  raw = e.read().decode()
+                  try:
+                      return e.code, json.loads(raw)
+                  except Exception:
+                      return e.code, raw
+
+          def branch_path(name):
+              return quote(name, safe='')
+
+          def branch_exists(name):
+              status, _ = api_request('GET', f'/repos/{repo}/branches/{branch_path(name)}')
+              return status == 200
+
+          def git_ref_exists(name):
+              status, body = api_request('GET', f'/repos/{repo}/git/refs/heads/{branch_path(name)}')
+              if status != 200:
+                  return False
+              refs = body if isinstance(body, list) else [body]
+              return any(isinstance(r, dict) and r.get('ref') == f'refs/heads/{name}' for r in refs)
+
+          # Resolve the PR from the VALIDATED COMMIT SHA.
+          #
+          # Do not use workflow_run.head_branch: for a pull_request-triggered run
+          # Gitea reports it as the PR ref ("#712") or omits it entirely — never the
+          # source branch name. head_sha is populated and matches the PR's head.sha
+          # exactly, so it is the reliable join key. Matching on the sha also means a
+          # PR that was pushed to after validation will NOT be found (its head moved),
+          # which is the behavior we want: stale validation must never merge.
+          target = None
+          page = 1
+          while True:
+              status, prs = api_request('GET', f'/repos/{repo}/pulls?state=open&limit=50&page={page}')
+              if status != 200 or not isinstance(prs, list) or not prs:
+                  break
+              for pr in prs:
+                  if ((pr.get('head') or {}).get('sha') or '') == head_sha \
+                     and ((pr.get('base') or {}).get('ref') or '') == base_branch:
+                      target = pr
+                      break
+              if target or len(prs) < 50:
+                  break
+              page += 1
+
+          if not target:
+              print(f"No open PR into '{base_branch}' with head sha {head_sha[:8]}; "
+                    f"nothing to merge (already merged, or the branch moved after validation).")
+              raise SystemExit(0)
+
+          num = target['number']
+          head_ref = (target.get('head') or {}).get('ref') or ''
+          label = f"#{num} ({head_ref} -> {base_branch})"
+
+          # Apply the -be- filter here, on the resolved PR's real source branch.
+          if pattern not in head_ref:
+              print(f"{label}: head branch does not match '{pattern}'; not ours, skipping.")
+              raise SystemExit(0)
+
+          # Re-fetch detail so mergeability reflects the latest state.
+          status, detail = api_request('GET', f'/repos/{repo}/pulls/{num}')
+          if status != 200 or not isinstance(detail, dict):
+              print(f"ERROR: could not fetch PR detail for {label} (status {status})")
+              raise SystemExit(1)
+          if detail.get('merged'):
+              print(f"{label}: already merged; nothing to do.")
+              raise SystemExit(0)
+          if detail.get('state') != 'open':
+              print(f"{label}: not open (state={detail.get('state')}); skipping.")
+              raise SystemExit(0)
+          if detail.get('has_merge_conflicts'):
+              print(f"{label}: has merge conflicts; leaving for the dispatch safety net.")
+              raise SystemExit(0)
+          if detail.get('mergeable') is False:
+              print(f"{label}: not mergeable; leaving for the dispatch safety net.")
+              raise SystemExit(0)
+
+          # Merge (squash) + delete branch. delete_branch_after_merge is the
+          # branch-lifecycle contract: merged -be- branches must be deleted so the
+          # next export recreates them from current master (Gitea cannot re-base an
+          # existing branch, so a surviving branch drifts into conflict).
+          # Retry in passes: when several books merge close together Gitea returns
+          # transient 405s (base moved under us). Re-check state each pass.
+          merged_ok = False
+          for attempt in range(1, 6):
+              status, result = api_request(
+                  'POST', f'/repos/{repo}/pulls/{num}/merge',
+                  {'Do': 'squash', 'delete_branch_after_merge': True, 'merge_when_checks_succeed': False},
+                  expect_json=False,
+              )
+              if status in (200, 201, 204):
+                  merged_ok = True
+                  print(f"Merged {label}" + (f" (attempt {attempt})" if attempt > 1 else ""))
+                  break
+              status2, d2 = api_request('GET', f'/repos/{repo}/pulls/{num}')
+              if isinstance(d2, dict) and d2.get('merged'):
+                  merged_ok = True
+                  print(f"{label}: already merged by the time we retried.")
+                  break
+              if isinstance(d2, dict) and (d2.get('has_merge_conflicts') or d2.get('mergeable') is False):
+                  print(f"{label}: became unmergeable (conflicts); leaving for the dispatch safety net.")
+                  raise SystemExit(0)
+              print(f"{label}: merge attempt {attempt} failed (status {status}: {result}); retrying...")
+              time.sleep(5 * attempt)
+          if not merged_ok:
+              print(f"ERROR: {label}: could not merge after 5 attempts.")
+              raise SystemExit(1)
+
+          # Verify the head branch and its git ref are cleanly gone. A surviving
+          # git ref with no branch is a dangling ref that blocks the book's export.
+          time.sleep(2)
+          if branch_exists(head_ref):
+              print(f"{label}: branch survived delete_branch_after_merge; deleting explicitly...")
+              api_request('DELETE', f'/repos/{repo}/branches/{branch_path(head_ref)}', expect_json=False)
+              time.sleep(2)
+          if branch_exists(head_ref):
+              print(f"ERROR: {label}: branch could not be deleted after merge — delete it manually or the export drifts.")
+              raise SystemExit(1)
+          if git_ref_exists(head_ref):
+              print(f"{label}: DANGLING REF detected (branch gone, git ref remains); deleting ref...")
+              api_request('DELETE', f'/repos/{repo}/git/refs/heads/{branch_path(head_ref)}', expect_json=False)
+              if git_ref_exists(head_ref):
+                  print(f"ERROR: {label}: dangling git ref remains after merge — clear it or the export skips this book.")
+                  raise SystemExit(1)
+          print(f"{label}: branch deleted. Done.")
+          PYEOF
