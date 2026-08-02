@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-08-01T00:18:28.665Z",
+    "dateCreated": "2026-08-02T12:36:09.524Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "8056e861705069404eede4471b898f0aaf39e514",
-          "timestamp": "2026-08-01T00:18:28.665Z"
+          "revision": "faf67f28dfc9f826e1ea09606bb977af00af7040",
+          "timestamp": "2026-08-02T12:36:09.524Z"
         }
       }
     },
@@ -1116,10 +1116,10 @@
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "ae3751f1772931c9b865f489cfc044a1"
+        "md5": "2af711f559d04b6f38882fd2790b70af"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 653723,
+      "size": 654814,
       "scope": {
         "EZK": []
       }
@@ -1353,10 +1353,10 @@
     },
     "ingredients/MIC.tsv": {
       "checksum": {
-        "md5": "1da5758cfdc672d21d8c292eaf2e8b84"
+        "md5": "88e575f4e815ed92531af488bde779aa"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 179392,
+      "size": 176616,
       "scope": {
         "MIC": []
       }
@@ -1393,10 +1393,10 @@
     },
     "ingredients/NUM.tsv": {
       "checksum": {
-        "md5": "203c9bcdb3c749bcb17fb7ba6b20f071"
+        "md5": "90c0c8adf5d049effacbab8b99df96cd"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1416790,
+      "size": 1424079,
       "scope": {
         "NUM": []
       }
@@ -1503,10 +1503,10 @@
     },
     "ingredients/ZEC.tsv": {
       "checksum": {
-        "md5": "b181927f77d8bd47c8df83f2d01a9d18"
+        "md5": "b9511a693323dde180311eeb02541cc2"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 331397,
+      "size": 331463,
       "scope": {
         "ZEC": []
       }
