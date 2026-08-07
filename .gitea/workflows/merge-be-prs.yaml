@@ -1,10 +1,23 @@
 name: Merge -be- Branch PRs
 on:
-  # Dispatch-only safety net. The primary path is per-PR:
+  # Safety net, not the primary path. The primary path is per-PR:
   # validate-be-branch (pull_request) -> merge-be-pr (workflow_run)
-  # merges each PR as it passes. Dispatch this to batch-merge any open
-  # -be- PR the per-PR path missed (e.g. a dropped validation event).
+  # merges each PR as it passes. This job sweeps up any open -be- PR that
+  # path missed (a dropped validation event, or a merge job that gave up).
   workflow_dispatch:
+
+  # A daily sweep, deliberately timed WELL AFTER the export burst.
+  #
+  # This job was cron-only until 2026-07-24, when the schedule was removed
+  # because it fired at 06:01 -- while bible-editor was still pushing branches
+  # (05:30-07:20). It enumerates open -be- PRs ONCE at the top of the run, so
+  # everything created after that snapshot was invisible and never merged.
+  # That failure mode is about TIMING, not about sweeping: at 09:00 the burst
+  # is hours done, the snapshot is complete, and a PR the per-PR path dropped
+  # gets picked up the same morning instead of sitting open until a human
+  # notices (en_ult#6639 and en_ust#4451 sat open for 2 days on 2026-08-07).
+  schedule:
+    - cron: '0 9 * * *'
 
 jobs:
   merge-be-prs:

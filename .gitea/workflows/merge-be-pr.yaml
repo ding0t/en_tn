@@ -69,6 +69,34 @@ jobs:
           def branch_path(name):
               return quote(name, safe='')
 
+          def unmergeable(detail):
+              return bool(detail.get('has_merge_conflicts')) or detail.get('mergeable') is False
+
+          def confirm_unmergeable(num, polls=4, delay=6):
+              """Re-poll before believing an 'unmergeable' read.
+
+              Gitea recomputes mergeability asynchronously. The moment a sibling book
+              squash-merges, master moves and EVERY other open -be- PR transiently
+              reports has_merge_conflicts / mergeable=false until the recompute lands.
+              Trusting that first read is what stranded en_ult#6639 (EZR) and
+              en_ust#4451 (NUM) on 2026-08-07: each was declared conflicted in the same
+              second a sibling merged, sat open for two days, and then merged cleanly by
+              hand with no conflict of any kind.
+
+              Returns (confirmed_unmergeable, latest_detail). A PR that merged out from
+              under us, or an API error, both return False -- the caller re-checks.
+              """
+              latest = None
+              for _ in range(polls):
+                  time.sleep(delay)
+                  status, detail = api_request('GET', f'/repos/{repo}/pulls/{num}')
+                  if status != 200 or not isinstance(detail, dict):
+                      return False, latest
+                  latest = detail
+                  if detail.get('merged') or not unmergeable(detail):
+                      return False, detail
+              return True, latest
+
           def branch_exists(name):
               status, _ = api_request('GET', f'/repos/{repo}/branches/{branch_path(name)}')
               return status == 200
@@ -128,12 +156,16 @@ jobs:
           if detail.get('state') != 'open':
               print(f"{label}: not open (state={detail.get('state')}); skipping.")
               raise SystemExit(0)
-          if detail.get('has_merge_conflicts'):
-              print(f"{label}: has merge conflicts; leaving for the dispatch safety net.")
-              raise SystemExit(0)
-          if detail.get('mergeable') is False:
-              print(f"{label}: not mergeable; leaving for the dispatch safety net.")
-              raise SystemExit(0)
+          if unmergeable(detail):
+              confirmed, latest = confirm_unmergeable(num)
+              if isinstance(latest, dict) and latest.get('merged'):
+                  print(f"{label}: merged by someone else while we re-polled; nothing to do.")
+                  raise SystemExit(0)
+              if confirmed:
+                  print(f"{label}: unmergeable and still unmergeable after re-polling; "
+                        f"leaving for the dispatch safety net.")
+                  raise SystemExit(0)
+              print(f"{label}: unmergeable flag was transient (base moved); proceeding.")
 
           # Merge (squash) + delete branch. delete_branch_after_merge is the
           # branch-lifecycle contract: merged -be- branches must be deleted so the
@@ -157,9 +189,21 @@ jobs:
                   merged_ok = True
                   print(f"{label}: already merged by the time we retried.")
                   break
-              if isinstance(d2, dict) and (d2.get('has_merge_conflicts') or d2.get('mergeable') is False):
-                  print(f"{label}: became unmergeable (conflicts); leaving for the dispatch safety net.")
-                  raise SystemExit(0)
+              if isinstance(d2, dict) and unmergeable(d2):
+                  # Do NOT bail on this first read -- a sibling book merging in a parallel
+                  # job moves master and makes Gitea report a phantom conflict for a few
+                  # seconds. That phantom is exactly what the retry loop exists to ride
+                  # out, so confirm it before giving up.
+                  confirmed, latest = confirm_unmergeable(num)
+                  if isinstance(latest, dict) and latest.get('merged'):
+                      merged_ok = True
+                      print(f"{label}: already merged by the time we re-polled.")
+                      break
+                  if confirmed:
+                      print(f"{label}: still unmergeable after re-polling; "
+                            f"leaving for the dispatch safety net.")
+                      raise SystemExit(0)
+                  print(f"{label}: unmergeable flag was transient (base moved); retrying...")
               print(f"{label}: merge attempt {attempt} failed (status {status}: {result}); retrying...")
               time.sleep(5 * attempt)
           if not merged_ok:
