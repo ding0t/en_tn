@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-08-11T18:05:26.856Z",
+    "dateCreated": "2026-08-11T21:37:22.449Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "ef275b746b3b56bfad08bdf37a21d7f88b8285bf",
-          "timestamp": "2026-08-11T18:05:26.856Z"
+          "revision": "09082cfb060445e2aa6d0c071e72408ef6956165",
+          "timestamp": "2026-08-11T21:37:22.449Z"
         }
       }
     },
@@ -856,10 +856,10 @@
   "ingredients": {
     "ingredients/1CH.tsv": {
       "checksum": {
-        "md5": "d7c50ad805ea09fff76d49905249ae7b"
+        "md5": "6650a1d10fe407f3f62838f6cd2d4a79"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 329549,
+      "size": 329722,
       "scope": {
         "1CH": []
       }
@@ -1036,10 +1036,10 @@
     },
     "ingredients/AMO.tsv": {
       "checksum": {
-        "md5": "45bdd329e39c31beb7b0e5dfa0fcb72d"
+        "md5": "4c129a5c19c518feb7337bf38efd3f49"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 133772,
+      "size": 131114,
       "scope": {
         "AMO": []
       }
@@ -1116,10 +1116,10 @@
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "26a6356317ad694c5eaaad1870559a5f"
+        "md5": "ff0ef26fd2ed206259e82a09ed14d913"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 693477,
+      "size": 694752,
       "scope": {
         "EZK": []
       }
@@ -1186,10 +1186,10 @@
     },
     "ingredients/HOS.tsv": {
       "checksum": {
-        "md5": "060ad6da0105a2c23deb9adff2029dbc"
+        "md5": "5e7058a8a08781a12c15ca51e38b60a6"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 317925,
+      "size": 318199,
       "scope": {
         "HOS": []
       }
@@ -1226,10 +1226,10 @@
     },
     "ingredients/JER.tsv": {
       "checksum": {
-        "md5": "c908953f56e55156388cdf9207715d43"
+        "md5": "a50a0c1b0118fab0331f763b82bc97b6"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 743811,
+      "size": 744316,
       "scope": {
         "JER": []
       }
@@ -1393,10 +1393,10 @@
     },
     "ingredients/NUM.tsv": {
       "checksum": {
-        "md5": "545c143bc96a326bdd2362dbaaa99e64"
+        "md5": "4b6c0afe1e01031f3707e3d592d79dbc"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1449098,
+      "size": 1452335,
       "scope": {
         "NUM": []
       }
