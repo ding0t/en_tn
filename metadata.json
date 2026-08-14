@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-08-14T12:36:10.913Z",
+    "dateCreated": "2026-08-14T16:31:21.611Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "38b3acf4f5120b0aa480b0465b7c8e0d5932ce48",
-          "timestamp": "2026-08-14T12:36:10.913Z"
+          "revision": "ecb9be3f45a103301615660fc16448f42b02d4af",
+          "timestamp": "2026-08-14T16:31:21.611Z"
         }
       }
     },
@@ -1036,10 +1036,10 @@
     },
     "ingredients/AMO.tsv": {
       "checksum": {
-        "md5": "fb84dd212d470b7f3d4aada93830de6b"
+        "md5": "aff732d04264133975748c896d8bb6ef"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 141529,
+      "size": 141520,
       "scope": {
         "AMO": []
       }
@@ -1096,10 +1096,10 @@
     },
     "ingredients/EST.tsv": {
       "checksum": {
-        "md5": "684a1b8f145995783124c46f73c75727"
+        "md5": "4a0ecdf82ab0c65596701ae07c1592af"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 333061,
+      "size": 333038,
       "scope": {
         "EST": []
       }
@@ -1116,10 +1116,10 @@
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "08bb949bfe4af6ca4415e1ddb65eccae"
+        "md5": "86b14bc0dd7ca08c33b3a3ee3201a3e8"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 701037,
+      "size": 700997,
       "scope": {
         "EZK": []
       }
@@ -1196,10 +1196,10 @@
     },
     "ingredients/ISA.tsv": {
       "checksum": {
-        "md5": "1b6a58e45084eaeb0e623914caea3a17"
+        "md5": "8265912467da8fabef1ae7f24da1093d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 2102904,
+      "size": 2102870,
       "scope": {
         "ISA": []
       }
@@ -1353,10 +1353,10 @@
     },
     "ingredients/MIC.tsv": {
       "checksum": {
-        "md5": "ebc713feef52d61776715ec8ca801751"
+        "md5": "a38bd7289b830c20b35c42238913fd44"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 197666,
+      "size": 197620,
       "scope": {
         "MIC": []
       }
