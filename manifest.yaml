@@ -373,12 +373,12 @@ dublin_core:
     translation decisions.
   format: text/tsv
   identifier: tn
-  issued: '2026-06-24'
+  issued: '2026-08-14'
   language:
     direction: ltr
     identifier: en
     title: English
-  modified: '2026-06-24'
+  modified: '2026-08-14'
   publisher: unfoldingWord
   relation:
     - en/ult
@@ -386,17 +386,17 @@ dublin_core:
     - en/ta
     - en/tq
     - en/tw
-    - hbo/uhb?v=2.1.31
+    - hbo/uhb?v=3.0.0
     - el-x-koine/ugnt?v=0.34
   rights: CC BY-SA 4.0
   source:
     - identifier: tn
       language: en
-      version: '88'
+      version: '89'
   subject: TSV Translation Notes
   title: unfoldingWord® Translation Notes
   type: help
-  version: '89'
+  version: '90'
 checking:
   checking_entity:
     - unfoldingWord
@@ -535,6 +535,13 @@ projects:
     path: ./tn_LAM.tsv
     categories:
       - bible-ot
+  - title: Hosea
+    versification: ufw
+    identifier: hos
+    sort: 28
+    path: ./tn_HOS.tsv
+    categories:
+      - bible-ot
   - title: Joel
     versification: ufw
     identifier: jol
@@ -554,6 +561,13 @@ projects:
     identifier: jon
     sort: 32
     path: ./tn_JON.tsv
+    categories:
+      - bible-ot
+  - title: Micah
+    versification: ufw
+    identifier: mic
+    sort: 33
+    path: ./tn_MIC.tsv
     categories:
       - bible-ot
   - title: Nahum
