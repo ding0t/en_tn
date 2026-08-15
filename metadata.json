@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-08-14T21:45:37.364Z",
+    "dateCreated": "2026-08-15T15:12:43.441Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "622baac1785af064cbf46df008d6fb3ff01b3efa",
-          "timestamp": "2026-08-14T21:45:37.364Z"
+          "revision": "b47b4421c30bc6377c0db28f5c73f80a38ce235e",
+          "timestamp": "2026-08-15T15:12:43.441Z"
         }
       }
     },
@@ -1036,10 +1036,10 @@
     },
     "ingredients/AMO.tsv": {
       "checksum": {
-        "md5": "aff732d04264133975748c896d8bb6ef"
+        "md5": "7040af0082a753f3a6d2766aa0c1b146"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 141520,
+      "size": 142003,
       "scope": {
         "AMO": []
       }
@@ -1056,10 +1056,10 @@
     },
     "ingredients/DAN.tsv": {
       "checksum": {
-        "md5": "c079126736a909f0ca6dd72d6a4aace6"
+        "md5": "6ae5d5f3ed86ef0009a28e93cce50c53"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 429626,
+      "size": 429613,
       "scope": {
         "DAN": []
       }
@@ -1116,10 +1116,10 @@
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "86b14bc0dd7ca08c33b3a3ee3201a3e8"
+        "md5": "6b974c529f2269533491d41c8c97bd0b"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 700997,
+      "size": 707391,
       "scope": {
         "EZK": []
       }
@@ -1196,10 +1196,10 @@
     },
     "ingredients/ISA.tsv": {
       "checksum": {
-        "md5": "0e9a84fabe22f7a6cca3d169b2a5c130"
+        "md5": "0304e0eb9d10299bbee75f61a05e170d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 2102858,
+      "size": 2102778,
       "scope": {
         "ISA": []
       }
@@ -1393,10 +1393,10 @@
     },
     "ingredients/NUM.tsv": {
       "checksum": {
-        "md5": "b2c4a76536025beee0a373567f95f206"
+        "md5": "dca3790cf40d74ed8b71b2098b4d61be"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1442888,
+      "size": 1442884,
       "scope": {
         "NUM": []
       }
@@ -1503,10 +1503,10 @@
     },
     "ingredients/ZEC.tsv": {
       "checksum": {
-        "md5": "f98e430a3a5a15032fab18c53474ca09"
+        "md5": "1dc6e17146bca7a9fac3eac3de56e156"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 332649,
+      "size": 332671,
       "scope": {
         "ZEC": []
       }
