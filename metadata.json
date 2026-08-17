@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-08-17T17:55:41.524Z",
+    "dateCreated": "2026-08-17T18:08:01.987Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "c4e4503a911a5de6131bcd4aa5edb34a35c42cb2",
-          "timestamp": "2026-08-17T17:55:41.524Z"
+          "revision": "72a9d51506b40405496d2d89df66e6883b9a0ecd",
+          "timestamp": "2026-08-17T18:08:01.987Z"
         }
       }
     },
@@ -1246,10 +1246,10 @@
     },
     "ingredients/JOB.tsv": {
       "checksum": {
-        "md5": "cc5a22b075a1614930621f10a20d3d0e"
+        "md5": "b880182c1c809c1e1d6da6c2189fff6d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1450379,
+      "size": 1450377,
       "scope": {
         "JOB": []
       }
@@ -1306,10 +1306,10 @@
     },
     "ingredients/LEV.tsv": {
       "checksum": {
-        "md5": "c0476e52bd9153ee92e1fa8bbeb0a74d"
+        "md5": "9f112ec871c7937710274429c28b7df8"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 938889,
+      "size": 938883,
       "scope": {
         "LEV": []
       }
@@ -1513,10 +1513,10 @@
     },
     "ingredients/ZEP.tsv": {
       "checksum": {
-        "md5": "7508a39e1a33eef54fcd5906cc714795"
+        "md5": "9ec9ecd3528e9ec990a4480f81d6391d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 143799,
+      "size": 143797,
       "scope": {
         "ZEP": []
       }
