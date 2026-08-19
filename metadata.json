@@ -5,11 +5,11 @@
     "category": "source",
     "generator": {
       "softwareName": "go-rc2sb",
-      "softwareVersion": "v0.4.0",
+      "softwareVersion": "v0.5.0",
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-08-18T20:01:59.485Z",
+    "dateCreated": "2026-08-19T22:07:16.018Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "3f4a842dd62f510849a9c71462f83b07f26d883d",
-          "timestamp": "2026-08-18T20:01:59.485Z"
+          "revision": "028cb07fd663338a080d01ff199fa16a316e3d08",
+          "timestamp": "2026-08-19T22:07:16.018Z"
         }
       }
     },
@@ -1036,10 +1036,10 @@
     },
     "ingredients/AMO.tsv": {
       "checksum": {
-        "md5": "264453d055bdd332103e46dd3b0e328e"
+        "md5": "cc6091be168f382444bd270a7dd1730b"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 191959,
+      "size": 203635,
       "scope": {
         "AMO": []
       }
@@ -1076,10 +1076,10 @@
     },
     "ingredients/ECC.tsv": {
       "checksum": {
-        "md5": "3f70c5b3b6bddbc6cda865c9e2b01a88"
+        "md5": "10c6605b5ebf2fab9d2d2e030d30997d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 254395,
+      "size": 269882,
       "scope": {
         "ECC": []
       }
@@ -1116,10 +1116,10 @@
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "6be099f97569e205342374696ffc45f3"
+        "md5": "99829dd3c56715e90fc96b717714e121"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 714228,
+      "size": 720493,
       "scope": {
         "EZK": []
       }
@@ -1503,10 +1503,10 @@
     },
     "ingredients/ZEC.tsv": {
       "checksum": {
-        "md5": "070e8f54b6389981f03fbed5cc6f4503"
+        "md5": "c0e5443209a94ca168794c60bc0c9403"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 332591,
+      "size": 335150,
       "scope": {
         "ZEC": []
       }
