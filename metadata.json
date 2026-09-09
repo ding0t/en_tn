@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-09-09T16:03:10.574Z",
+    "dateCreated": "2026-09-09T17:44:22.001Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "657fd9087d91630f4b997fe5499dc5dd277ac5e2",
-          "timestamp": "2026-09-09T16:03:10.574Z"
+          "revision": "9f10978ee184fd37e00dc9b4c3c270857ebf7820",
+          "timestamp": "2026-09-09T17:44:22.001Z"
         }
       }
     },
@@ -856,50 +856,50 @@
   "ingredients": {
     "ingredients/1CH.tsv": {
       "checksum": {
-        "md5": "5f119160dcc6e2cf94d7a271b111ace2"
+        "md5": "1e74534a720a43c4b54e87202e95d93e"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 378416,
+      "size": 378342,
       "scope": {
         "1CH": []
       }
     },
     "ingredients/1CO.tsv": {
       "checksum": {
-        "md5": "1e196479b9a46913cda4ecc78d2391a8"
+        "md5": "916f9f744b1678262d4990122afb0733"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1328716,
+      "size": 1328654,
       "scope": {
         "1CO": []
       }
     },
     "ingredients/1JN.tsv": {
       "checksum": {
-        "md5": "f2e3b46cdca65c5f8baa2c3ff79c923d"
+        "md5": "bfb0b74fc6fe1c62f77355ac4d7c4461"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 250680,
+      "size": 250682,
       "scope": {
         "1JN": []
       }
     },
     "ingredients/1KI.tsv": {
       "checksum": {
-        "md5": "36c73a3d8398f2d144f0b9695522357d"
+        "md5": "be3764f5d0b6428ccc522b7cc1aa3b45"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1058935,
+      "size": 1058767,
       "scope": {
         "1KI": []
       }
     },
     "ingredients/1PE.tsv": {
       "checksum": {
-        "md5": "68300a68a6da8ac1bd634352bb0f2678"
+        "md5": "07fe4d662fe33e4b1e775a7d25df588b"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 191885,
+      "size": 191871,
       "scope": {
         "1PE": []
       }
@@ -916,27 +916,27 @@
     },
     "ingredients/1TH.tsv": {
       "checksum": {
-        "md5": "e50e8f8404a689f8dbd052825c2cff5f"
+        "md5": "8bd3d4480da39aaa71c8dbaee47ca274"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 248766,
+      "size": 248718,
       "scope": {
         "1TH": []
       }
     },
     "ingredients/1TI.tsv": {
       "checksum": {
-        "md5": "65b7519a10d452ef1c45b043b8028821"
+        "md5": "68aa25b70c8fd689319931c742d0d41d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 297602,
+      "size": 297544,
       "scope": {
         "1TI": []
       }
     },
     "ingredients/2CH.tsv": {
       "checksum": {
-        "md5": "895998d9c433dfe82dfe5664272e2ce8"
+        "md5": "e1bbd73455a1bcfb968338d65f0f87c4"
       },
       "mimeType": "text/tab-separated-values",
       "size": 402899,
@@ -946,10 +946,10 @@
     },
     "ingredients/2CO.tsv": {
       "checksum": {
-        "md5": "e692fdb267f642b21b1a6bfca5c5d8ad"
+        "md5": "6c85ae09626f164191ebc5ff541021bc"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 717116,
+      "size": 717050,
       "scope": {
         "2CO": []
       }
@@ -966,50 +966,50 @@
     },
     "ingredients/2KI.tsv": {
       "checksum": {
-        "md5": "d7f4c000a6ad75d96fc09ca0f3b9404e"
+        "md5": "a0a0cff05764f225dfd1c6cecb187c02"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 806649,
+      "size": 806523,
       "scope": {
         "2KI": []
       }
     },
     "ingredients/2PE.tsv": {
       "checksum": {
-        "md5": "5132711cff18ef609cbdc9fb885e5bc7"
+        "md5": "5c76a635a1467c1ed8bef62d4e71929d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 166791,
+      "size": 166785,
       "scope": {
         "2PE": []
       }
     },
     "ingredients/2SA.tsv": {
       "checksum": {
-        "md5": "1b6084680db62b5f1fff2c41df14ccd3"
+        "md5": "76fcf8f57abbafbefce962c5cae90ad6"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 938487,
+      "size": 938473,
       "scope": {
         "2SA": []
       }
     },
     "ingredients/2TH.tsv": {
       "checksum": {
-        "md5": "88334071e061bc1e133dc78d324243f6"
+        "md5": "16fbc85adb60fea8c807f44ae20a94cb"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 78204,
+      "size": 78199,
       "scope": {
         "2TH": []
       }
     },
     "ingredients/2TI.tsv": {
       "checksum": {
-        "md5": "cf926cfc4449622b514fc482095d2768"
+        "md5": "1a043542900c3516addd1aacccbab443"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 193061,
+      "size": 193029,
       "scope": {
         "2TI": []
       }
@@ -1026,10 +1026,10 @@
     },
     "ingredients/ACT.tsv": {
       "checksum": {
-        "md5": "215aab0f036c8e667a0138d9d6fc1b5c"
+        "md5": "10f9d5d5a9bf56f72eacd744cd1352f0"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1249809,
+      "size": 1249739,
       "scope": {
         "ACT": []
       }
@@ -1046,80 +1046,80 @@
     },
     "ingredients/COL.tsv": {
       "checksum": {
-        "md5": "8a54d8d027f3baa1f97646c62938394b"
+        "md5": "04e10d48bd1a0a03be2f00b058ab708c"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 270233,
+      "size": 270225,
       "scope": {
         "COL": []
       }
     },
     "ingredients/DAN.tsv": {
       "checksum": {
-        "md5": "674738151bea8f1169626403f53aaaca"
+        "md5": "4d99c7c0a71fd9f73beb3b986a6981c8"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 429914,
+      "size": 429799,
       "scope": {
         "DAN": []
       }
     },
     "ingredients/DEU.tsv": {
       "checksum": {
-        "md5": "6c1ee02926d20b5cf3618496a3ad1f85"
+        "md5": "424e2296305ab7aafef35ab8867e1059"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1253391,
+      "size": 1253265,
       "scope": {
         "DEU": []
       }
     },
     "ingredients/ECC.tsv": {
       "checksum": {
-        "md5": "4476b60dea3c790d2097e672ed259872"
+        "md5": "296888df041aa8380056e636de437fa9"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 223670,
+      "size": 221060,
       "scope": {
         "ECC": []
       }
     },
     "ingredients/EPH.tsv": {
       "checksum": {
-        "md5": "69bc412fd6d2026a9c254a6ee3fe59b0"
+        "md5": "0e2b7f01b5547a872f1b92642487fa8d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 141431,
+      "size": 141424,
       "scope": {
         "EPH": []
       }
     },
     "ingredients/EST.tsv": {
       "checksum": {
-        "md5": "94ce62dfd219ee2f61434828ffd8024f"
+        "md5": "c86354b73cab52dad8e87f92c31fbdce"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 332945,
+      "size": 332944,
       "scope": {
         "EST": []
       }
     },
     "ingredients/EXO.tsv": {
       "checksum": {
-        "md5": "a0e4a7b4a28dd298cdcac01524de6889"
+        "md5": "fb6a9f3832abbd8a1593a3805b95d65d"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 802469,
+      "size": 802063,
       "scope": {
         "EXO": []
       }
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "3fe99687f3db4521e6feb534616c044b"
+        "md5": "246d39d3ea704250e738735bb08a67c6"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 755374,
+      "size": 757044,
       "scope": {
         "EZK": []
       }
@@ -1136,27 +1136,27 @@
     },
     "ingredients/GAL.tsv": {
       "checksum": {
-        "md5": "883fb723f208fa4b42734e1132785189"
+        "md5": "f66ebdd8d10760df8e8ae1163157871a"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 327313,
+      "size": 327311,
       "scope": {
         "GAL": []
       }
     },
     "ingredients/GEN.tsv": {
       "checksum": {
-        "md5": "c38c8cee8358d0a3bac61acb24bb3f05"
+        "md5": "e2b9d70d5599e815440d2f25a6d1a274"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1546236,
+      "size": 1546104,
       "scope": {
         "GEN": []
       }
     },
     "ingredients/HAB.tsv": {
       "checksum": {
-        "md5": "99009906a120c9bfc0cc1227e02e188d"
+        "md5": "51e7a8b9ff002339d232870f2bd1509d"
       },
       "mimeType": "text/tab-separated-values",
       "size": 104798,
@@ -1166,40 +1166,40 @@
     },
     "ingredients/HAG.tsv": {
       "checksum": {
-        "md5": "d808335cfd8fc4e5636f0d1e4bd4da73"
+        "md5": "0a67261539ebb3e43b433f078b8d2ce8"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 79336,
+      "size": 79328,
       "scope": {
         "HAG": []
       }
     },
     "ingredients/HEB.tsv": {
       "checksum": {
-        "md5": "f5af556d520c7ecb7357c64f310022bf"
+        "md5": "3318da3f89093493345d53c29d04ceaf"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 908588,
+      "size": 908546,
       "scope": {
         "HEB": []
       }
     },
     "ingredients/HOS.tsv": {
       "checksum": {
-        "md5": "bfa4cf5496d36ebee7c7fb3947c2a84e"
+        "md5": "99d5067c21d76e706bf3a1532e3ae154"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 318409,
+      "size": 318411,
       "scope": {
         "HOS": []
       }
     },
     "ingredients/ISA.tsv": {
       "checksum": {
-        "md5": "0a031815f51a57068e6964b0b5e8a18f"
+        "md5": "b437c593927781c0d1952fd5abba1e2e"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 2103278,
+      "size": 2102817,
       "scope": {
         "ISA": []
       }
@@ -1216,40 +1216,40 @@
     },
     "ingredients/JDG.tsv": {
       "checksum": {
-        "md5": "a505a76a1a30d094955b1ad022649a84"
+        "md5": "add32ce73e2b5bb8da305b2143ae9506"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 716087,
+      "size": 716075,
       "scope": {
         "JDG": []
       }
     },
     "ingredients/JER.tsv": {
       "checksum": {
-        "md5": "68a80596227d0ab4a9bb010485c0d092"
+        "md5": "4df1359216fd90d55efc84f85c22c820"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1125919,
+      "size": 1126294,
       "scope": {
         "JER": []
       }
     },
     "ingredients/JHN.tsv": {
       "checksum": {
-        "md5": "36ddff4316c177cff94a7ef16151d0b0"
+        "md5": "d565b9e2f2573fad6c5ee96f55f83f94"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 905578,
+      "size": 905588,
       "scope": {
         "JHN": []
       }
     },
     "ingredients/JOB.tsv": {
       "checksum": {
-        "md5": "b880182c1c809c1e1d6da6c2189fff6d"
+        "md5": "74615f14aabe23c8a8135290f937f9dd"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1450377,
+      "size": 1450310,
       "scope": {
         "JOB": []
       }
@@ -1266,27 +1266,27 @@
     },
     "ingredients/JON.tsv": {
       "checksum": {
-        "md5": "dcf98a6ce8ec33d5c324cc1b5912f937"
+        "md5": "136b6738be916be8d939eeee837c0792"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 89366,
+      "size": 89382,
       "scope": {
         "JON": []
       }
     },
     "ingredients/JOS.tsv": {
       "checksum": {
-        "md5": "388e84dad0cc74b255ce8dd2a45eb7c3"
+        "md5": "31ec0fccf63ef87bdf56128c4dbff3bb"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 446909,
+      "size": 446895,
       "scope": {
         "JOS": []
       }
     },
     "ingredients/JUD.tsv": {
       "checksum": {
-        "md5": "bf54abc95b03862dc9ecda63f439fe64"
+        "md5": "f07d3cea615a3e6034b0671307c93c13"
       },
       "mimeType": "text/tab-separated-values",
       "size": 56682,
@@ -1306,10 +1306,10 @@
     },
     "ingredients/LEV.tsv": {
       "checksum": {
-        "md5": "9f112ec871c7937710274429c28b7df8"
+        "md5": "9a63d19f831df3bcd12bb9c0875c8b16"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 938883,
+      "size": 938527,
       "scope": {
         "LEV": []
       }
@@ -1323,10 +1323,10 @@
     },
     "ingredients/LUK.tsv": {
       "checksum": {
-        "md5": "eb407ada77fe2390f10f55a8f2dee92d"
+        "md5": "14c8fdaa2d7d5326e3cd0063908e9ce7"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1426046,
+      "size": 1426066,
       "scope": {
         "LUK": []
       }
@@ -1343,10 +1343,10 @@
     },
     "ingredients/MAT.tsv": {
       "checksum": {
-        "md5": "bdff705a424b7c5342232df1e8fd5dfb"
+        "md5": "b3170f8729e040de8c5d2b81a8ebc6f5"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 2166077,
+      "size": 2165685,
       "scope": {
         "MAT": []
       }
@@ -1363,17 +1363,17 @@
     },
     "ingredients/MRK.tsv": {
       "checksum": {
-        "md5": "c9adf9e41ee6023be2faf9b58c3cba22"
+        "md5": "ece88f7ad97fdeb873454f6f27cbaa3a"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1266955,
+      "size": 1266709,
       "scope": {
         "MRK": []
       }
     },
     "ingredients/NAM.tsv": {
       "checksum": {
-        "md5": "63857de940168e2b22e2a8224f5d2954"
+        "md5": "d908d283a0463097383c49e5e9efaa64"
       },
       "mimeType": "text/tab-separated-values",
       "size": 79488,
@@ -1393,10 +1393,10 @@
     },
     "ingredients/NUM.tsv": {
       "checksum": {
-        "md5": "462d1bedd74f495613da58f3ac8870e3"
+        "md5": "126c485f3b81db91b247ca5213a15f65"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1467449,
+      "size": 1467441,
       "scope": {
         "NUM": []
       }
@@ -1433,47 +1433,47 @@
     },
     "ingredients/PRO.tsv": {
       "checksum": {
-        "md5": "0a5ec38068807bfd084dd50f57fa237f"
+        "md5": "f73846e499199e7688a93981511bbe13"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1412804,
+      "size": 1412712,
       "scope": {
         "PRO": []
       }
     },
     "ingredients/PSA.tsv": {
       "checksum": {
-        "md5": "1fc88d2fb707d6d9a8f1d5874e08edbd"
+        "md5": "705653f69758957d700611228782592a"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 3333726,
+      "size": 3332304,
       "scope": {
         "PSA": []
       }
     },
     "ingredients/REV.tsv": {
       "checksum": {
-        "md5": "8923209af899ea0701bcfe4a0485ac8f"
+        "md5": "45facf82fca9326a40b5b8258df2aa19"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 566610,
+      "size": 566516,
       "scope": {
         "REV": []
       }
     },
     "ingredients/ROM.tsv": {
       "checksum": {
-        "md5": "a8e7d589e0528a3231547e2fef18a386"
+        "md5": "35547434a7793063508f143d025f3776"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 984445,
+      "size": 984433,
       "scope": {
         "ROM": []
       }
     },
     "ingredients/RUT.tsv": {
       "checksum": {
-        "md5": "04c69015907380c7724b23f33946fba6"
+        "md5": "7132abd0199ba611363e03a9d3b6c8d0"
       },
       "mimeType": "text/tab-separated-values",
       "size": 115919,
@@ -1503,20 +1503,20 @@
     },
     "ingredients/ZEC.tsv": {
       "checksum": {
-        "md5": "97638d56ba4e61a3b9055cc1db0ab3a9"
+        "md5": "b995e80ba87aa520a68a1f369825fcf2"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 338750,
+      "size": 338752,
       "scope": {
         "ZEC": []
       }
     },
     "ingredients/ZEP.tsv": {
       "checksum": {
-        "md5": "9ec9ecd3528e9ec990a4480f81d6391d"
+        "md5": "3a48dd244d6799f81ccdbf038ac6359a"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 143797,
+      "size": 143807,
       "scope": {
         "ZEP": []
       }
