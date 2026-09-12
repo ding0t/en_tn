@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-09-11T22:32:24.042Z",
+    "dateCreated": "2026-09-12T11:30:18.541Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "130075925dd24ceafb534d6e81aff819f3cdd5fc",
-          "timestamp": "2026-09-11T22:32:24.042Z"
+          "revision": "c330ef2855ee24d42124f619228a3fc92ba65689",
+          "timestamp": "2026-09-12T11:30:18.541Z"
         }
       }
     },
@@ -1036,7 +1036,7 @@
     },
     "ingredients/AMO.tsv": {
       "checksum": {
-        "md5": "a8aedfc5fd5e08a545323dada71b30d1"
+        "md5": "0d710bacd666fa52797b81e52ba9a791"
       },
       "mimeType": "text/tab-separated-values",
       "size": 231519,
@@ -1076,10 +1076,10 @@
     },
     "ingredients/ECC.tsv": {
       "checksum": {
-        "md5": "42f0721259c7dcb2c629a023bbb238c5"
+        "md5": "f41eb4a663c64181838af2c7fd5e5670"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 217918,
+      "size": 217387,
       "scope": {
         "ECC": []
       }
@@ -1116,10 +1116,10 @@
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "21ba8c273d8450cb877784ec5e1b6d70"
+        "md5": "9c8f68955d7b366c5f2a32447e9ecc3a"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 773461,
+      "size": 774118,
       "scope": {
         "EZK": []
       }
@@ -1226,10 +1226,10 @@
     },
     "ingredients/JER.tsv": {
       "checksum": {
-        "md5": "9c3981294adc844c9f5d51476ff44257"
+        "md5": "c8858db64d3ca61963da595f2ae39aa5"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1217656,
+      "size": 1218206,
       "scope": {
         "JER": []
       }
@@ -1503,10 +1503,10 @@
     },
     "ingredients/ZEC.tsv": {
       "checksum": {
-        "md5": "a5fcef092f09ef9054c36b2f32fa23d9"
+        "md5": "c20f19c288d100f84ed7e7cfd37efc32"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 338448,
+      "size": 339054,
       "scope": {
         "ZEC": []
       }
