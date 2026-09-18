@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-09-17T20:38:21.593Z",
+    "dateCreated": "2026-09-18T17:07:57.263Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "5fc71d0fcb74bfc34886fa0568b2cc099524637b",
-          "timestamp": "2026-09-17T20:38:21.593Z"
+          "revision": "852652b3630abf9caf5fa7538e3b3d3daf9336a9",
+          "timestamp": "2026-09-18T17:07:57.263Z"
         }
       }
     },
@@ -1076,10 +1076,10 @@
     },
     "ingredients/ECC.tsv": {
       "checksum": {
-        "md5": "f9275b5b286cc2f64d29101be23cc4a2"
+        "md5": "e70721b4a16359583130f6e3cd3ae869"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 215144,
+      "size": 214606,
       "scope": {
         "ECC": []
       }
@@ -1116,10 +1116,10 @@
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "9734f626063d130d5c3a27b01ba1b85f"
+        "md5": "fa0b8797aaa51604e293625f8ed1e490"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 791628,
+      "size": 791915,
       "scope": {
         "EZK": []
       }
@@ -1196,10 +1196,10 @@
     },
     "ingredients/ISA.tsv": {
       "checksum": {
-        "md5": "fc18e7b1d3927d408fe13339f3cffcb7"
+        "md5": "85b3dfe48c1ed7ba3dd3b3a90518c948"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 2102817,
+      "size": 2102816,
       "scope": {
         "ISA": []
       }
@@ -1226,10 +1226,10 @@
     },
     "ingredients/JER.tsv": {
       "checksum": {
-        "md5": "428c5679b8d7dc0f43f4ea55998b2295"
+        "md5": "45f3ab9e2e9b1c77bb0961c02a5b03e9"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1415876,
+      "size": 1421004,
       "scope": {
         "JER": []
       }
@@ -1393,10 +1393,10 @@
     },
     "ingredients/NUM.tsv": {
       "checksum": {
-        "md5": "a183d013bf60a7f45648b306dc82e7a8"
+        "md5": "e12532b0611e95cd4234eba39ce1d90b"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1468505,
+      "size": 1473964,
       "scope": {
         "NUM": []
       }
