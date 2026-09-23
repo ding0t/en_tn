@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-09-23T19:25:07.552Z",
+    "dateCreated": "2026-09-23T19:27:29.848Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "976f092aa72162095db0b53e4b0270a1875be471",
-          "timestamp": "2026-09-23T19:25:07.552Z"
+          "revision": "4f7f85308c820ce2c8e61461e2682db2f38d3fc3",
+          "timestamp": "2026-09-23T19:27:29.848Z"
         }
       }
     },
@@ -866,7 +866,7 @@
     },
     "ingredients/1CO.tsv": {
       "checksum": {
-        "md5": "672bd9e0fab30d7135bfd8f85892b704"
+        "md5": "acf4596e854453f97cc90c2efeb0cc2b"
       },
       "mimeType": "text/tab-separated-values",
       "size": 1328663,
@@ -926,7 +926,7 @@
     },
     "ingredients/1TI.tsv": {
       "checksum": {
-        "md5": "9adbfd71ae7d139430210ece531a5a7a"
+        "md5": "bbda1548d504750a075bb687b6a1b350"
       },
       "mimeType": "text/tab-separated-values",
       "size": 297546,
@@ -946,7 +946,7 @@
     },
     "ingredients/2CO.tsv": {
       "checksum": {
-        "md5": "5c96cf45435edbfd20dba0d77784b4ef"
+        "md5": "4ded1faab875cfe6c6a8fcb3db9e5052"
       },
       "mimeType": "text/tab-separated-values",
       "size": 717054,
@@ -1066,7 +1066,7 @@
     },
     "ingredients/DEU.tsv": {
       "checksum": {
-        "md5": "8425967dc6fa1940286ce44b3de235a9"
+        "md5": "74b8f8e9a4aacc3e457fc408b3ddd53d"
       },
       "mimeType": "text/tab-separated-values",
       "size": 1253299,
@@ -1086,7 +1086,7 @@
     },
     "ingredients/EPH.tsv": {
       "checksum": {
-        "md5": "207be351931c5f746a2f71802e9beca3"
+        "md5": "3c90732884a892a450f44bc3ec40cf15"
       },
       "mimeType": "text/tab-separated-values",
       "size": 141428,
@@ -1136,7 +1136,7 @@
     },
     "ingredients/GAL.tsv": {
       "checksum": {
-        "md5": "8cdf29a73f9c85108482912fc15e08eb"
+        "md5": "c56606780ee1cb6a845e0324cae4d4f0"
       },
       "mimeType": "text/tab-separated-values",
       "size": 327320,
@@ -1226,7 +1226,7 @@
     },
     "ingredients/JER.tsv": {
       "checksum": {
-        "md5": "44ba84873e62b54d809d94470daee3be"
+        "md5": "9bd98abe0ca93d3ffb6c33861e4759bc"
       },
       "mimeType": "text/tab-separated-values",
       "size": 1554466,
@@ -1236,7 +1236,7 @@
     },
     "ingredients/JHN.tsv": {
       "checksum": {
-        "md5": "fa52fc3f51701f892794b6e6a07a6499"
+        "md5": "49db5d0b2afd984adbfedc8e79b7748b"
       },
       "mimeType": "text/tab-separated-values",
       "size": 905607,
@@ -1246,7 +1246,7 @@
     },
     "ingredients/JOB.tsv": {
       "checksum": {
-        "md5": "c74de9c2ae97941582211562334c3b5b"
+        "md5": "feb3707a3e079d1b3d6bb6727d7655dd"
       },
       "mimeType": "text/tab-separated-values",
       "size": 1450318,
@@ -1266,7 +1266,7 @@
     },
     "ingredients/JON.tsv": {
       "checksum": {
-        "md5": "e4574d04aae80e1efc04159fab73baf3"
+        "md5": "61d76c2bec65be6587090201df669f3f"
       },
       "mimeType": "text/tab-separated-values",
       "size": 89386,
@@ -1306,7 +1306,7 @@
     },
     "ingredients/LEV.tsv": {
       "checksum": {
-        "md5": "38861c40a334347adcf2863bffee8df7"
+        "md5": "1dd390131dd8321fcf7a5c79d7abc9b1"
       },
       "mimeType": "text/tab-separated-values",
       "size": 938531,
@@ -1343,7 +1343,7 @@
     },
     "ingredients/MAT.tsv": {
       "checksum": {
-        "md5": "787eb07997fe64d6c5dfd3f67e50f046"
+        "md5": "7fee923c13edc32fef7652405d66ec72"
       },
       "mimeType": "text/tab-separated-values",
       "size": 2165688,
@@ -1383,7 +1383,7 @@
     },
     "ingredients/NEH.tsv": {
       "checksum": {
-        "md5": "274b8b6130b335ab3843e19c9d5831b8"
+        "md5": "17469028ab052485312b4dece0d3a2c8"
       },
       "mimeType": "text/tab-separated-values",
       "size": 636600,
@@ -1443,7 +1443,7 @@
     },
     "ingredients/PSA.tsv": {
       "checksum": {
-        "md5": "de6fbf7f821be32666140950cfc17ff8"
+        "md5": "aec18da5ca77b1a16869582f201e810f"
       },
       "mimeType": "text/tab-separated-values",
       "size": 3332328,
