@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-09-24T14:19:04.554Z",
+    "dateCreated": "2026-09-24T17:30:03.592Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "366ab37e1db9e7b2bdc66dfdf1bb009b884b7110",
-          "timestamp": "2026-09-24T14:19:04.554Z"
+          "revision": "9ad4473f7161f30d72ffb792e8b263a33b914f9f",
+          "timestamp": "2026-09-24T17:30:03.592Z"
         }
       }
     },
@@ -856,10 +856,10 @@
   "ingredients": {
     "ingredients/1CH.tsv": {
       "checksum": {
-        "md5": "c5529260d53536959aa81f4ee92299d6"
+        "md5": "7bf53833ebe313fa77f9a04444138261"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 650153,
+      "size": 664424,
       "scope": {
         "1CH": []
       }
@@ -1056,10 +1056,10 @@
     },
     "ingredients/DAN.tsv": {
       "checksum": {
-        "md5": "336a73aa2e47363f1a0d0d8edd6675ee"
+        "md5": "eddece971c48b8d9d0ecd713ccd8e8d7"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 434128,
+      "size": 434129,
       "scope": {
         "DAN": []
       }
@@ -1076,10 +1076,10 @@
     },
     "ingredients/ECC.tsv": {
       "checksum": {
-        "md5": "1ad502b3ba751aedf401fbee478d4663"
+        "md5": "a1c3faf77ac1161ef971d239a6aa2dac"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 209057,
+      "size": 209055,
       "scope": {
         "ECC": []
       }
@@ -1116,10 +1116,10 @@
     },
     "ingredients/EZK.tsv": {
       "checksum": {
-        "md5": "6a4cb2efc599725e25883bd94ce0170c"
+        "md5": "0f332cb4d4d2e5dccc8ee76e9e807f62"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 820552,
+      "size": 820816,
       "scope": {
         "EZK": []
       }
@@ -1196,10 +1196,10 @@
     },
     "ingredients/ISA.tsv": {
       "checksum": {
-        "md5": "3fbb2db0ebb6b665099b91559d9be5c9"
+        "md5": "0e9505e47a4f67377cb46d5d7d33c066"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 2099968,
+      "size": 2098214,
       "scope": {
         "ISA": []
       }
@@ -1226,10 +1226,10 @@
     },
     "ingredients/JER.tsv": {
       "checksum": {
-        "md5": "dfb2320618a72a166aaf921cf6928c92"
+        "md5": "6280d7e23c1d346d51c28c0b09df999c"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 1554181,
+      "size": 1554595,
       "scope": {
         "JER": []
       }
