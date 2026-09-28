@@ -550,6 +550,7 @@ def validate_paired_square_brackets(
             if not stack:
                 errors.add(
                     rule=CHECK_PAIRED_SQUARE_BRACKET,
+                    severity="warning",
                     **row_context,
                     message=(
                         f"Closing bracket '{token}' at character {i + 1} does not have a "
@@ -561,6 +562,7 @@ def validate_paired_square_brackets(
                 if open_len != run_len:
                     errors.add(
                         rule=CHECK_PAIRED_SQUARE_BRACKET,
+                        severity="warning",
                         **row_context,
                         message=(
                             f"Opening bracket '{'[' * open_len}' at character {open_pos + 1} "
@@ -575,6 +577,7 @@ def validate_paired_square_brackets(
         open_len, open_pos = stack.pop()
         errors.add(
             rule=CHECK_PAIRED_SQUARE_BRACKET,
+            severity="warning",
             **row_context,
             message=(
                 f"Opening bracket '{'[' * open_len}' at character {open_pos + 1} does not "
