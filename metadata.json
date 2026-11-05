@@ -9,7 +9,7 @@
       "userName": ""
     },
     "defaultLocale": "en",
-    "dateCreated": "2026-11-05T05:35:29.473Z",
+    "dateCreated": "2026-11-05T05:35:38.458Z",
     "normalization": "NFC"
   },
   "idAuthorities": {
@@ -24,8 +24,8 @@
     "primary": {
       "dcs": {
         "unfoldingWord/en_tn": {
-          "revision": "67672c73672487caef33ab9fd1a0c45adc1efc36",
-          "timestamp": "2026-11-05T05:35:29.473Z"
+          "revision": "e0d2e03eae3b0e87873051e6fd1581cb965a02d5",
+          "timestamp": "2026-11-05T05:35:38.458Z"
         }
       }
     },
@@ -1076,10 +1076,10 @@
     },
     "ingredients/ECC.tsv": {
       "checksum": {
-        "md5": "035e9c122e152118db6874162d527b90"
+        "md5": "0556d0a2fc5df8ef140028503ff4bef7"
       },
       "mimeType": "text/tab-separated-values",
-      "size": 275361,
+      "size": 274944,
       "scope": {
         "ECC": []
       }
